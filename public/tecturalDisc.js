@@ -18,10 +18,7 @@ function draw() {
   fill(0);
 
   let hello = d => console.log(d)
-
-
   curs();
-
 }
 
 
@@ -77,4 +74,11 @@ function mouseDragged() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   background(51);
+}
+
+function mousePressed() {
+  if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+  }
 }
