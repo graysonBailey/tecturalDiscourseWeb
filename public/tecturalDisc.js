@@ -1,54 +1,78 @@
 var socket;
 var tFont;
+let curs;
+var discourse;
+
+
+window.onload = function() {
+  document.getElementById('about-this-website').onclick = () => {
+    document.getElementById('about-window-overlay').classList.remove('disabled');
+  }
+
+
+
+}
+
+
 
 function preload() {
   tFont = loadFont("OCRAStd.otf");
+  discourse = loadJSON("allgemeine.json");
+
 }
 
-function setup() {
+
+function displayDiscourse(){
+  fill(255);
+  text(discourse,100,100,400,1000)
+  var units =discourse.units
+
+for(var each in units){
+
+  let unit = units[each];
+
+  text(unit.Base,unit.PosX,unit.PosY,400,1000)
+console.log(units[each])
+}
+
+
+}
+
+
+
+// for( var element of discourse){
+// console.log(element.PosX)
+//
+// }
+function setStage(){
+
   createCanvas(windowWidth, windowHeight);
-  background(51);
+  background(0);
   textFont(tFont);
   socket = io.connect('localhost:3000');
   socket.on('mouse', newDrawing);
+
+noCursor();
+  //cursor("swift.png");
+  displayDiscourse();
+}
+
+
+
+function setup() {
+setStage();
 }
 
 function draw() {
-  background(0);
-  fill(0);
-
-  let hello = d => console.log(d)
-  curs();
-}
-
-
-
-
-function curs() {
-  stroke(47,230,240);
-  push();
-  translate(mouseX,mouseY);
-  strokeWeight(3);
-  point(0, 5);
-  point(5, 0);
-  point(0, 0);
-  pop();
-  noStroke();
-}
-
-
-function newDrawing(data, tex) {
-  noStroke();
-  fill(255, 0, 100);
-  console.log(data.talk);
-
-  ellipse(data.x, data.y, 36, 36);
-
-  fill(0);
-  text(data.talk, data.x, data.y);
+//background(0,5);
 
 }
 
+
+function setPositions() {
+  document.getElementById("x-coord").innerHTML = mouseX
+  document.getElementById("y-coord").innerHTML = mouseY
+}
 
 function mouseDragged() {
 
@@ -73,7 +97,7 @@ function mouseDragged() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  background(51);
+  background(0);
 }
 
 function mousePressed() {
@@ -81,4 +105,12 @@ function mousePressed() {
     let fs = fullscreen();
     fullscreen(!fs);
   }
+
+
+
+
+}
+
+function mouseMoved() {
+  setPositions()
 }
