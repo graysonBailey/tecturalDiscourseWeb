@@ -7,6 +7,9 @@
   src: url(miso-bold.otf);
 }
 
+div{
+cursor : url("swift.png"), pointer;
+}
 
 
 .overlay-content {

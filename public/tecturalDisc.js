@@ -51,10 +51,9 @@ function setStage(){
   textFont(tFont);
   socket = io.connect('localhost:3000');
   socket.on('mouse', newDrawing);
-
-noCursor();
-  //cursor("swift.png");
+  cursor("swift.png")
   displayDiscourse();
+
 }
 
 
@@ -64,7 +63,7 @@ setStage();
 }
 
 function draw() {
-//background(0,5);
+
 
 }
 
@@ -73,6 +72,22 @@ function setPositions() {
   document.getElementById("x-coord").innerHTML = mouseX
   document.getElementById("y-coord").innerHTML = mouseY
 }
+
+
+
+
+
+
+
+
+function newDrawing(data, tex) {
+  noStroke();
+  fill(255, 0, 100);
+  fill(230,47,240);
+  text(data.talk, data.x, data.y);
+
+}
+
 
 function mouseDragged() {
 
@@ -90,8 +105,8 @@ function mouseDragged() {
   socket.emit('text', tex);
 
   noStroke();
-  fill(255);
-  ellipse(mouseX, mouseY, 60, 60);
+  fill(47,230,240);
+  ellipse(mouseX, mouseY, 20, 20);
 
 }
 
