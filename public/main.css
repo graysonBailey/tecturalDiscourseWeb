@@ -1,14 +1,14 @@
 @font-face {
   font-family: OCRA;
-  src: url(miso.otf);
+  src: url(assets/miso.otf);
 }
 @font-face {
   font-family: OCRA-bold;
-  src: url(miso-bold.otf);
+  src: url(assets/miso-bold.otf);
 }
 
 div{
-cursor : url("swift.png"), pointer;
+cursor : url("assets/swift.png"), pointer;
 }
 
 
@@ -28,6 +28,35 @@ cursor : url("swift.png"), pointer;
   color: rgb(47,230,240);
 }
 
+.noselect {
+user-select: none;
+}
+
+.g-corntent {
+  position: fixed;
+  top: 0;
+  height:50vh;
+  left: 20;
+  font-family: "OCRA";
+  font-size: 11pt;
+  padding: 5px 0px;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  justify-content: left;
+  background-color: rgb(255);
+  color: rgb(255);
+  transform:translateY(20vh) ;
+  width: 1 px;
+}
+
+.g-overlay-left {
+
+  transform: rotate(0deg) translateX(0px);
+  transform-origin: top right 0;
+  color:white;
+}
+
 .overlay-content-element {
   flex: 1;
 }
@@ -35,13 +64,19 @@ cursor : url("swift.png"), pointer;
 /* Custom style for each one of the 4 page borders */
 
 .overlay-top {
-  width: calc(100vw - 70px);
+  width: 120vw;
 }
 .overlay-left {
   width: calc(100vh - 70px);
-  transform: rotate(-90deg) translateX(0px) translateY(-100vh);
+  transform: rotate(0deg) translateX(0px) translateY(0vh);
   transform-origin: top right 0;
 }
+
+
+
+
+
+
 .overlay-right {
   width: calc(100vh - 70px);
   transform: rotate(90deg) translateX(0px) translateY(-100vw);
@@ -73,6 +108,41 @@ cursor : url("swift.png"), pointer;
   display: none;
 }
 ABOUT_THIS_WEBSITE
+
+.g-window-overlay {
+  position: fixed;
+  top: 25px;
+  left: 0;
+  width: 100px;
+  bottom: 0;
+  font-family: "OCRA", sans-serif;
+  font-size: 13pt;
+  padding: 10px;
+  background-color: pink;
+  color :pink;
+
+
+}
+
+.g-about-text {
+  padding-left:10 px;
+  width: 10%;
+  text-overflow: wrap;
+  font-size : 18;
+}
+
+#about-window-overlay {
+  overflow-y: scroll;
+  opacity: 80;
+}
+
+
+
+
+
+
+
+
 .window-overlay {
   position: fixed;
   top: 0;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>object discour.se</title>
-  <link rel="icon" type="image/png" href="https://i.imgur.com/BUiboCv.png">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/socket.io/socket.io.js"></script>
 
@@ -24,63 +24,61 @@
     }
   </style>
 
-  <link rel="icon" type="image/png" href="https://i.imgur.com/BUiboCv.png">
+  <link rel="shortcut icon" href="assets/fav.ico">
   <link rel="stylesheet" href="main.css">
 </head>
 
 
-<body style="margin: 0; overflow: hidden;">
+<body style="margin: 0; overflow: hidden">
 
-  <div class="overlay-content overlay-top">
-    <div id="formatted-time" class="overlay-top-left overlay-content-element">
-      <span>08:12:18</span>
+  <div class="g-corntent noselect">
+    <div class="g-overlay-left g-overlay-content-element">
+      <span>sool tool one</span>
+      <br /><br />
+      <span>sool tool two</span>
+      <br /><br />
+      <span>sool tool three</span>
+      <br /><br />
+      <span>sool tool four</span>
+    </div>
+  </div>
+
+  ----------------------------------------------------
+
+  <div class="overlay-content overlay-top noselect">
+
+    <div class="overlay-top-left overlay-content-element">
+      <span>left</span>
     </div>
     <div class="overlay-top-center overlay-content-element">
       <span>object discour.se</span>
     </div>
-  </div>
-
-  <div class="overlay-content overlay-left">
-    <div class="overlay-left-left overlay-content-element">
-      <span>editing tools</span>
-    </div>
-    <div class="overlay-left-center overlay-content-element">
-      <span id="move-button" class="button">spam</span>
-      <span id="remove-button" class="button">spam</span>
-    </div>
-    <div id="formatted-date" class="overlay-left-right">
-      <span>October 8, 2018</span>
-    </div>
-  </div>
-
-  <div class="overlay-content overlay-bottom">
-    <div class="overlay-bottom-left overlay-content-element">
-      <span id="line-button" title="Click once in order to start the line. Click again in order to end it." class="button">line</span>
-      <span id="box-button" title="Click once in order to start the box. Click again in order to finalize its front face. Click again to place its shadow." class="button">box</span>
-      <span id="text-button" title="Click once and start typing. Click again in order to end editing." class="button">text</span>
-    </div>
-    <div class="overlay-bottom-center overlay-content-element">
-      <span id="save-button" class="button disabled">save</span>
-      <span id="cancel-button" class="button disabled">cancel</span>
-    </div>
-  </div>
-
-  <div class="overlay-content overlay-right">
-    <div class="overlay-right-left overlay-content-element">
-      <span id="about-this-website" class="button">about this website</span>
-    </div>
-    <div class="overlay-right-center overlay-content-element">
+    <div class="overlay-right-center overlay-content-element noselect">
       <span>x:</span><span id="x-coord">0,</span>
       <span>y:</span><span id="y-coord">0</span>
     </div>
-    <div class="overlay-right-right">
-      <span id="share-screen" class="button">share screen</span>
+  </div>
+
+   -----------------------------------------------------------
+
+  <div class="overlay-content overlay-right noselect">
+    <div class="overlay-right-left overlay-content-element">
+      <span id="about-this-website" class="button">about this website</span>
     </div>
   </div>
 
+  <!-- <div class="overlay-top-right overlay-content-element">
+      <span id="line-button" title="Click once in order to start the line. Click again in order to end it." class="button">line</span>
+      <span id="box-button" title="Click once in order to start the box. Click again in order to finalize its front face. Click again to place its shadow." class="button">box</span>
+      <span id="text-button" title="Click once and start typing. Click again in order to end editing." class="button">text</span>
+    </div> -->
+
+
+    ------------------------------------------------------------------------
+
   <div id="about-window-overlay" class="window-overlay disabled animated">
     <div id="about-window-overlay-close" class="overlay-close-button"><button onclick="shutDown();"> ✕ </div>
-    <div class="about-text">
+      <div class="about-text">
       000pen.space is an infinite canvas, editable by anyone.
       It's a scaffolding for holding any type of content, under a set of design constraints.
       <br /><br /><br />
@@ -132,7 +130,10 @@
 
     </div>
 
-  </div>
+
+
+
+
 
 
 </body>
