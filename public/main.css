@@ -24,8 +24,10 @@ cursor : url("assets/swift.png"), pointer;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background-color: rgb(51);
+  background-color: black;
+  opacity: 0.5;
   color: rgb(47,230,240);
+  z-index: 1;
 }
 
 .noselect {
@@ -34,27 +36,25 @@ user-select: none;
 
 .g-corntent {
   position: fixed;
-  top: 0;
-  height:50vh;
-  left: 20;
+  top: 32px;
+  height:100vh;
+  left: 0;
   font-family: "OCRA";
   font-size: 11pt;
-  padding: 5px 0px;
+  padding: 5px 5px;
   display: flex;
   flex-direction: row;
   align-items: left;
   justify-content: left;
-  background-color: rgb(255);
-  color: rgb(255);
-  transform:translateY(20vh) ;
-  width: 1 px;
+  /* background-color: black; */
+  z-index:1;
 }
 
 .g-overlay-left {
 
   transform: rotate(0deg) translateX(0px);
   transform-origin: top right 0;
-  color:white;
+  color: #D400D0;
 }
 
 .overlay-content-element {
@@ -96,11 +96,35 @@ user-select: none;
 .button {  }
 .button:hover {
   color: blue;
-  cursor: pointer;
 }
 .button.highlight {
   color: red;
 }
+
+.overlay-close-button {
+  position: fixed;
+  right: 38%;
+  top: 8px;
+  font-family: "OCRA", sans-serif;
+  font-size: 16pt;
+  border:none;
+  overflow: hidden;
+  background-repeat:no-repeat;
+  background-color: transparent;
+}
+
+.overlay-close-button:hover {
+  color: black;
+}
+
+
+
+
+
+
+
+
+
 .hidden {
   visibility: hidden;
 }
@@ -132,8 +156,12 @@ ABOUT_THIS_WEBSITE
 }
 
 #about-window-overlay {
-  overflow-y: scroll;
-  opacity: 80;
+  /* overflow-y: scroll; */
+  opacity: 1;
+  background-color: rgb(255,0,0);
+  align-items: right;
+  justify-content: right;
+
 }
 
 
@@ -146,7 +174,7 @@ ABOUT_THIS_WEBSITE
 .window-overlay {
   position: fixed;
   top: 0;
-  left: 0;
+  left:58%;
   right: 0;
   bottom: 0;
   font-family: "OCRA", sans-serif;
@@ -154,20 +182,14 @@ ABOUT_THIS_WEBSITE
   padding: 10px;
   background-color: white;
   color :black;
+  align-items: right;
+  justify-content: right;
+
+
+
 }
 
-.overlay-close-button {
-  position: fixed;
-  right: 13px;
-  top: 8px;
-  font-family: "OCRA", sans-serif;
-  font-size: 16pt;
-  cursor: pointer;
-}
 
-.overlay-close-button:hover {
-  color: rgb(47,230,240);
-}
 
 .animated {
   opacity: 80;
@@ -212,17 +234,26 @@ a.version-link:hover {
 }
 
 #about-window-overlay {
-  overflow-y: scroll;
-  color:black;
+  /* overflow-y: scroll; */
+  color:white;
+  width: 40%;
   font-family: "OCRA";
+  z-index:2;
+
+}
+
+#about-window-overlay-close {
+
+border:none;
+
 }
 
 .about-text {
   padding-left:10 px;
-  width: 60%;
-  text-overflow: wrap;
-  font-size : 12;
 
+  text-overflow: wrap;
+  font-size : 18;
+  text-align:right;
 
 }
 
