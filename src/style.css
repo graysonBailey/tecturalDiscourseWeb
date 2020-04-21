@@ -49,7 +49,7 @@ user-select: none;
 .g-corntent {
   position: fixed;
   top: 32px;
-  height:100vh;
+  height:8vh;
   left: 0;
   font-family: "OCRA";
   font-size: 11pt;
@@ -58,7 +58,7 @@ user-select: none;
   flex-direction: row;
   align-items: left;
   justify-content: left;
-  /* background-color: black; */
+  background-color: black;
   z-index:1;
 }
 
