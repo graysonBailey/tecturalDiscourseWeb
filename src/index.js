@@ -9,39 +9,39 @@ import p5 from 'p5';
 
 // const containerElement = document.getElementById('p5-container');
 
-const sketch = (p) => {
-  let x = 100;
-  let y = 100;
-  let can;
-
-  p.setup = function() {
-    can = p.createCanvas(800, 400);
-      p.background(0);
-    can.mousePressed(p.drawEllipse);
-  };
-
-  p.draw = function() {
-    p.fill(255);
-
-
-
-
-  };
-
-  p.drawEllipse = function(){
-
-    p.ellipse(p.mouseX,p.mouseY,100,100);
-    console.log("worked")
-
-
-  }
+// const sketch = (p) => {
+//   let x = 100;
+//   let y = 100;
+//   let can;
+//
+//   p.setup = function() {
+//     can = p.createCanvas(800, 400);
+//       p.background(0);
+//     can.mousePressed(p.drawEllipse);
+//   };
+//
+//   p.draw = function() {
+//     p.fill(255);
+//
+//
+//
+//
+//   };
+//
+//   p.drawEllipse = function(){
+//
+//     p.ellipse(p.mouseX,p.mouseY,100,100);
+//     console.log("worked")
+//
+//
+//   }
 
 //   function p.mouseClicked(){
 //     p.fill(255);
 // p.ellipse(mouseX,mouseY,100,100);
 //
 //   }
-};
+// };
 //
 new p5(sketch);
 
