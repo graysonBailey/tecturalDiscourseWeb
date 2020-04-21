@@ -19,9 +19,9 @@ textarea
    resize:none;
 }
 
-/* div{
+* {
 cursor : url("assets/swift.png"), pointer;
-} */
+}
 
 
 .overlay-content {

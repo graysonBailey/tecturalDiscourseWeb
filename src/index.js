@@ -43,7 +43,7 @@ import p5 from 'p5';
 //   }
 // };
 //
-new p5(sketch);
+// new p5(sketch);
 
 let socket;
 let tFont;
