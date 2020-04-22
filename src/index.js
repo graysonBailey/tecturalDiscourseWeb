@@ -3,6 +3,8 @@ import './style.css';
 import p5 from 'p5';
 import io from 'socket.io-client';
 import discourseJSON from './allgemeine.json';
+import dUnit from './dUnit.js';
+import shout from './shout.js';
 let path = require('path');
 
 const socket = io('http://localhost:3000');
@@ -83,6 +85,7 @@ const sketch = (p) => {
 
 
   p.mouseDragged = function() {
+    //shout();
 
     var tex = "loser";
     var data = {
