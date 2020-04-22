@@ -2,6 +2,7 @@ import _ from 'lodash';
 import './style.css';
 import p5 from 'p5';
 import io from 'socket.io-client';
+import discourseJSON from './allgemeine.json';
 let path = require('path');
 
 const socket = io('http://localhost:3000');
@@ -34,7 +35,7 @@ const sketch = (p) => {
 
   p.preload = function() {
     tFont = p.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
-   // discourse = p.loadJSON("assets/allgemeine.json");
+   discourse = discourseJSON
   }
 
 
@@ -43,14 +44,10 @@ const sketch = (p) => {
     cnv = p.createCanvas(p.windowWidth, p.windowHeight)
 
     console.log("setting up")
-    //p.textFont(tFont)
-
+    p.textFont(tFont)
     socket.on('mouse', p.newDrawing)
     p.refresh()
     p.fill(255)
-    p.text("HERE IS A TEST",100,100)
-
-
   }
 
   p.refresh = function() {
@@ -58,8 +55,8 @@ const sketch = (p) => {
 
 
     p.cursor("228ed835800150758bdcfe3a458531a8.png");
-    //p.displayDiscourse();
-    //pointers = [p.createVector(0, 0), p.createVector(0, 0)]
+    p.displayDiscourse();
+    pointers = [p.createVector(0, 0), p.createVector(0, 0)]
 
     p.translate(0,position);
   }
@@ -101,29 +98,65 @@ const sketch = (p) => {
   }
 
 
+  p.displayDiscourse = function() {
+
+    for(let i = 0; i <p.windowHeight; i+=50){
+      p.stroke(255)
+      p.strokeWeight(.1)
+      p.line(100,i,p.windowWidth-100,i)
+    }
+    p.noStroke();
+    p.fill(255);
+    let units = discourse.units
+    for (let each in units) {
+      let unit = units[each];
+      if(unit.PosX > 0 && unit.PosX < p.windowWidth && unit.PosY+position > -30 && unit.PosY+position < p.windowHeight) {
+        p.text(unit.Base, unit.PosX, unit.PosY+position, 400, 1000)
+      }
+    }
+  }
+
+  p.mouseClicked = function() {
+    if (pointers[0].x + pointers[0].y == 0) {
+      pointers[0].x = p.mouseX
+      pointers[0].y = p.mouseY
+      // console.log("POINTER ONE" + pointers[0])
+    } else {
+      pointers[1].x = p.mouseX
+      pointers[1].y = p.mouseY
+      // console.log("POINTER TWO" + pointers[1])
+      p.stroke('#ffA908');
+      p.strokeWeight(1);
+      p.line(pointers[0].x, pointers[0].y, pointers[1].x, pointers[1].y);
+      pointers[0] = p.createVector(0, 0);
+    }
+  }
+
+  p.mouseMoved = function() {
+    p.setPositions()
+  }
+
+  function mouseWheel(event){
+  position-= event.delta/2;
+  refresh();
+  }
+
+  function keyPressed(){
+
+    if(keyCode == ESCAPE){
+      let temp = document.getElementById('tempGeist')
+      if( temp != null){
+          temp.remove()
+      }
+    }
+  }
+
+  p.setPositions = function() {
+    document.getElementById("x-coord").innerHTML = p.mouseX
+    document.getElementById("y-coord").innerHTML = p.mouseY
+  }
 
 
-  // p.setup = function() {
-  //   can = p.createCanvas(800, 400);
-  //     p.background(0);
-  //   can.mousePressed(p.drawEllipse);
-  // };
-  //
-  // p.draw = function() {
-  //   p.fill(255);
-  //
-  //
-  //
-  //
-  // };
-  //
-  // p.drawEllipse = function(){
-  //
-  //   p.ellipse(p.mouseX,p.mouseY,100,100);
-  //   console.log("worked")
-  //
-  //
-  // }
 
 
 };
@@ -163,29 +196,9 @@ window.onload = function() {
 
 
 
-function displayDiscourse() {
-
-for(let i = 0; i <windowHeight; i+=50){
-stroke(255)
-strokeWeight(.1)
-
-line(100,i,windowWidth-100,i)
-
-}
 
 
-  noStroke();
-  fill(255);
-  let units = discourse.units
-  for (let each in units) {
-    let unit = units[each];
-    if(unit.PosX > 0 && unit.PosX < windowWidth && unit.PosY+position > -30 && unit.PosY+position < windowHeight) {
-    text(unit.Base, unit.PosX, unit.PosY+position, 400, 1000)
-  }
 
-    //console.log(units[each])
-  }
-}
 
 
 
@@ -221,22 +234,6 @@ function centerCanvas(can) {
 }
 
 
-function draw(){
-}
-
-
-function setPositions() {
-  document.getElementById("x-coord").innerHTML = mouseX
-  document.getElementById("y-coord").innerHTML = mouseY
-}
-
-// function newDrawing(data, tex) {
-//   noStroke();
-//   fill(255, 0, 100);
-//   fill(230, 47, 240);
-//   text(data.talk, data.x, data.y);
-// }
-
 
 // function mouseDragged() {
 //
@@ -270,37 +267,37 @@ function mousePressed() {
   }
 }
 
-function mouseClicked() {
-  if (pointers[0].x + pointers[0].y == 0) {
-    pointers[0].x = mouseX
-    pointers[0].y = mouseY
-    // console.log("POINTER ONE" + pointers[0])
-  } else {
-    pointers[1].x = mouseX
-    pointers[1].y = mouseY
-    // console.log("POINTER TWO" + pointers[1])
-    stroke('#ffA908');
-    strokeWeight(1);
-    line(pointers[0].x, pointers[0].y, pointers[1].x, pointers[1].y);
-    pointers[0] = createVector(0, 0);
-  }
-}
+// function mouseClicked() {
+//   if (pointers[0].x + pointers[0].y == 0) {
+//     pointers[0].x = mouseX
+//     pointers[0].y = mouseY
+//     // console.log("POINTER ONE" + pointers[0])
+//   } else {
+//     pointers[1].x = mouseX
+//     pointers[1].y = mouseY
+//     // console.log("POINTER TWO" + pointers[1])
+//     stroke('#ffA908');
+//     strokeWeight(1);
+//     line(pointers[0].x, pointers[0].y, pointers[1].x, pointers[1].y);
+//     pointers[0] = createVector(0, 0);
+//   }
+// }
 
-function mouseMoved() {
-  setPositions()
-}
-
-function mouseWheel(event){
-position-= event.delta/2;
-refresh();
-}
-
-function keyPressed(){
-
-  if(keyCode == ESCAPE){
-    let temp = document.getElementById('tempGeist')
-    if( temp != null){
-        temp.remove()
-    }
-  }
-}
+// function mouseMoved() {
+//   setPositions()
+// }
+//
+// function mouseWheel(event){
+// position-= event.delta/2;
+// refresh();
+// }
+//
+// function keyPressed(){
+//
+//   if(keyCode == ESCAPE){
+//     let temp = document.getElementById('tempGeist')
+//     if( temp != null){
+//         temp.remove()
+//     }
+//   }
+// }
