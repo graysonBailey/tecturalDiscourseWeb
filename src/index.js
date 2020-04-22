@@ -1,53 +1,134 @@
 import _ from 'lodash';
 import './style.css';
 import p5 from 'p5';
+import io from 'socket.io-client';
+let path = require('path');
+
+const socket = io('http://localhost:3000');
+
+
+
+
 
 // new p5();
 
 
 
 
-const containerElement = document.getElementById('p5-container');
+//const containerElement = document.getElementById('p5-container');
 
 const sketch = (p) => {
   let x = 100;
   let y = 100;
   let can;
 
+
+  let tFont;
+  let curs;
+  let discourse;
+  let pointers = [];
+  let position = 0
+  let cnv;
+
+
+
+  p.preload = function() {
+    tFont = p.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
+   // discourse = p.loadJSON("assets/allgemeine.json");
+  }
+
+
+
   p.setup = function() {
-    can = p.createCanvas(800, 400);
-      p.background(0);
-    can.mousePressed(p.drawEllipse);
-  };
+    cnv = p.createCanvas(p.windowWidth, p.windowHeight)
 
-  p.draw = function() {
-    p.fill(255);
+    console.log("setting up")
+    //p.textFont(tFont)
 
-
-
-
-  };
-
-  p.drawEllipse = function(){
-
-    p.ellipse(p.mouseX,p.mouseY,100,100);
-    console.log("worked")
+    socket.on('mouse', p.newDrawing)
+    p.refresh()
+    p.fill(255)
+    p.text("HERE IS A TEST",100,100)
 
 
   }
 
+  p.refresh = function() {
+    p.background(0);
+
+
+    p.cursor("228ed835800150758bdcfe3a458531a8.png");
+    //p.displayDiscourse();
+    //pointers = [p.createVector(0, 0), p.createVector(0, 0)]
+
+    p.translate(0,position);
+  }
+
+  p.draw = function(){
+
+
+  }
+
+  p.windowResized = function() {
+    p.resizeCanvas(p.windowWidth, p.windowHeight);
+    //p.background(0);
+    p.refresh();
+    console.log("resized!")
+  }
+
+
+  p.newDrawing = function(data, tex) {
+    p.noStroke();
+    p.fill(255, 0, 100);
+    p.fill(230, 47, 240);
+    p.text(data.talk, data.x, data.y);
+  }
+
+
+  p.mouseDragged = function() {
+
+    var tex = "loser";
+    var data = {
+      x: p.mouseX,
+      y: p.mouseY,
+      talk: tex
+    }
+    socket.emit('mouse', data);
+    socket.emit('text', tex);
+    p.noStroke();
+    p.fill(47, 230, 240)
+    p.ellipse(p.mouseX, p.mouseY, 20, 20);
+  }
+
+
+
+
+  // p.setup = function() {
+  //   can = p.createCanvas(800, 400);
+  //     p.background(0);
+  //   can.mousePressed(p.drawEllipse);
+  // };
+  //
+  // p.draw = function() {
+  //   p.fill(255);
+  //
+  //
+  //
+  //
+  // };
+  //
+  // p.drawEllipse = function(){
+  //
+  //   p.ellipse(p.mouseX,p.mouseY,100,100);
+  //   console.log("worked")
+  //
+  //
+  // }
+
 
 };
 
-new p5(sketch);
-
-let socket;
-let tFont;
-let curs;
-let discourse;
-let pointers = [];
-let position = 0
-let cnv;
+let baseSketch = new p5(sketch);
 
 
 
@@ -72,11 +153,11 @@ window.onload = function() {
 
 
 
-
-function preload() {
-  tFont = loadFont("assets/OCRAStd.otf");
-  discourse = loadJSON("allgemeine.json");
-}
+//
+// function preload() {
+//   tFont = loadFont("assets/OCRAStd.otf");
+//   discourse = loadJSON("allgemeine.json");
+// }
 
 
 
@@ -109,28 +190,28 @@ line(100,i,windowWidth-100,i)
 
 
 
-function refresh() {
-  background(31);
+// function refresh() {
+//   background(31);
+//
+//
+//   cursor("assets/swift.png");
+//   displayDiscourse();
+//   pointers = [createVector(0, 0), createVector(0, 0)]
+//
+//   translate(0,position);
+// }
 
 
-  cursor("assets/swift.png");
-  displayDiscourse();
-  pointers = [createVector(0, 0), createVector(0, 0)]
 
-  translate(0,position);
-}
-
-
-
-function setup() {
-  cnv = createCanvas(windowWidth, windowHeight)
-  centerCanvas(cnv)
-  textFont(tFont)
-  socket = io.connect('localhost:3000')
-  socket.on('mouse', newDrawing)
-  refresh()
-
-}
+// function setup() {
+//   cnv = createCanvas(windowWidth, windowHeight)
+//   centerCanvas(cnv)
+//   textFont(tFont)
+//   socket = io.connect('localhost:8080')
+//   socket.on('mouse', newDrawing)
+//   refresh()
+//
+// }
 
 function centerCanvas(can) {
   var x = 0;
@@ -149,12 +230,12 @@ function setPositions() {
   document.getElementById("y-coord").innerHTML = mouseY
 }
 
-function newDrawing(data, tex) {
-  noStroke();
-  fill(255, 0, 100);
-  fill(230, 47, 240);
-  text(data.talk, data.x, data.y);
-}
+// function newDrawing(data, tex) {
+//   noStroke();
+//   fill(255, 0, 100);
+//   fill(230, 47, 240);
+//   text(data.talk, data.x, data.y);
+// }
 
 
 // function mouseDragged() {
@@ -172,11 +253,11 @@ function newDrawing(data, tex) {
 //   ellipse(mouseX, mouseY, 20, 20);
 // }
 
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  background(0);
-  refresh();
-}
+// function windowResized() {
+//   resizeCanvas(windowWidth, windowHeight);
+//   background(0);
+//   refresh();
+// }
 
 function mousePressed() {
   if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {

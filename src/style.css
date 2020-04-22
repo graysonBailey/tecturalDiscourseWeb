@@ -48,8 +48,8 @@ user-select: none;
 
 .g-corntent {
   position: fixed;
-  top: 32px;
-  height:8vh;
+  top: 0px;
+  height:0;
   left: 0;
   font-family: "OCRA";
   font-size: 11pt;
@@ -58,8 +58,8 @@ user-select: none;
   flex-direction: row;
   align-items: left;
   justify-content: left;
-  background-color: black;
-  z-index:1;
+  background-color: red;
+  z-index:3;
 }
 
 .g-overlay-left {
