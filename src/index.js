@@ -100,13 +100,14 @@ const sketch = (p) => {
 
   p.displayDiscourse = function() {
 
-    for(let i = 0; i <p.windowHeight; i+=50){
+    for(let i = 0; i <p.windowHeight; i+=25){
       p.stroke(255)
       p.strokeWeight(.1)
       p.line(100,i,p.windowWidth-100,i)
     }
     p.noStroke();
     p.fill(255);
+    p.textSize(16);
     let units = discourse.units
     for (let each in units) {
       let unit = units[each];
@@ -136,18 +137,15 @@ const sketch = (p) => {
     p.setPositions()
   }
 
-  function mouseWheel(event){
+  p.mouseWheel = function(event){
   position-= event.delta/2;
-  refresh();
+  p.refresh();
   }
 
-  function keyPressed(){
-
-    if(keyCode == ESCAPE){
+  p.keyPressed = function() {
+    if(p.keyCode == p.ESCAPE){
       let temp = document.getElementById('tempGeist')
-      if( temp != null){
-          temp.remove()
-      }
+      if( temp != null){temp.remove()}
     }
   }
 
@@ -156,20 +154,23 @@ const sketch = (p) => {
     document.getElementById("y-coord").innerHTML = p.mouseY
   }
 
+  p.mousePressed = function() {
+    if (p.mouseX > 0 && p.mouseX < 100 && p.mouseY > 0 && p.mouseY < 100) {
+      let fs = p.fullscreen();
+      p.fullscreen(!fs);
+    } else if(document.getElementsByClassName('geist').length < 1){
+      let input = p.createElement('textarea').class('geist');
+        input.position(p.mouseX,p.mouseY)
+        input.id('tempGeist')
+    }
+  }
+
 
 
 
 };
 
 let baseSketch = new p5(sketch);
-
-
-
-
-
-
-
-
 
 
 window.onload = function() {
@@ -182,122 +183,3 @@ window.onload = function() {
     console.log("pressed it")
   }
 }
-
-
-
-
-//
-// function preload() {
-//   tFont = loadFont("assets/OCRAStd.otf");
-//   discourse = loadJSON("allgemeine.json");
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-// function refresh() {
-//   background(31);
-//
-//
-//   cursor("assets/swift.png");
-//   displayDiscourse();
-//   pointers = [createVector(0, 0), createVector(0, 0)]
-//
-//   translate(0,position);
-// }
-
-
-
-// function setup() {
-//   cnv = createCanvas(windowWidth, windowHeight)
-//   centerCanvas(cnv)
-//   textFont(tFont)
-//   socket = io.connect('localhost:8080')
-//   socket.on('mouse', newDrawing)
-//   refresh()
-//
-// }
-
-function centerCanvas(can) {
-  var x = 0;
-  var y = 0;
-  can.position(x, y);
-  //can.style('z-index','-1')
-}
-
-
-
-// function mouseDragged() {
-//
-//   var tex = "loser";
-//   var data = {
-//     x: mouseX,
-//     y: mouseY,
-//     talk: tex
-//   }
-//   socket.emit('mouse', data);
-//   socket.emit('text', tex);
-//   noStroke();
-//   fill(47, 230, 240)
-//   ellipse(mouseX, mouseY, 20, 20);
-// }
-
-// function windowResized() {
-//   resizeCanvas(windowWidth, windowHeight);
-//   background(0);
-//   refresh();
-// }
-
-function mousePressed() {
-  if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
-    let fs = fullscreen();
-    fullscreen(!fs);
-  } else if(document.getElementsByClassName('geist').length < 1){
-    let input = createElement('textarea').class('geist');
-      input.position(mouseX,mouseY)
-      input.id('tempGeist')
-  }
-}
-
-// function mouseClicked() {
-//   if (pointers[0].x + pointers[0].y == 0) {
-//     pointers[0].x = mouseX
-//     pointers[0].y = mouseY
-//     // console.log("POINTER ONE" + pointers[0])
-//   } else {
-//     pointers[1].x = mouseX
-//     pointers[1].y = mouseY
-//     // console.log("POINTER TWO" + pointers[1])
-//     stroke('#ffA908');
-//     strokeWeight(1);
-//     line(pointers[0].x, pointers[0].y, pointers[1].x, pointers[1].y);
-//     pointers[0] = createVector(0, 0);
-//   }
-// }
-
-// function mouseMoved() {
-//   setPositions()
-// }
-//
-// function mouseWheel(event){
-// position-= event.delta/2;
-// refresh();
-// }
-//
-// function keyPressed(){
-//
-//   if(keyCode == ESCAPE){
-//     let temp = document.getElementById('tempGeist')
-//     if( temp != null){
-//         temp.remove()
-//     }
-//   }
-// }
