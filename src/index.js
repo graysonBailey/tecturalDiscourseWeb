@@ -4,13 +4,15 @@ import p5 from 'p5';
 import io from 'socket.io-client';
 import dUnit from './dUnit.js';
 import back from './back.js';
-import content from './content.js';
+import {content, discourseUnit, discourses, position} from './content.js';
 let path = require('path');
+
+console.log(discourses);
 
 const socket = io('http://localhost:3000');
 
 back()
-content()
+
 
 new p5((p) => {
   let tFont;
@@ -82,9 +84,26 @@ new p5((p) => {
 
 
   p.keyPressed = function() {
-    if(p.keyCode == p.ESCAPE){
+    if(p.keyCode === 32){
+      console.log("spaced")
+      if(document.getElementsByClassName('geist').length < 1){
+        let input = p.createElement("textarea").class('geist')
+        input.position(p.mouseX,p.mouseY)
+        console.log(input.position())
+        input.id('tempGeist')
+      }
+    }else if(p.keyCode == p.ESCAPE){
       let temp = document.getElementById('tempGeist')
       if( temp != null){temp.remove()}
+    } else if(p.keyCode == p.ENTER){
+      let temp = document.getElementById('tempGeist')
+      if( temp != null){
+        let ttop = temp.offsetTop
+        let tleft = temp.offsetLeft
+        let tcont = temp.value
+        discourses.push(new discourseUnit(tcont, {x:tleft,y:ttop+position}, 0))
+        temp.remove();
+      }
     }
   }
 
@@ -97,13 +116,17 @@ new p5((p) => {
     if (p.mouseX > 0 && p.mouseX < 100 && p.mouseY > 0 && p.mouseY < 100) {
       let fs = p.fullscreen();
       p.fullscreen(!fs);
-    } else if(document.getElementsByClassName('geist').length < 1){
-      let input = p.createElement("textarea").class('geist')
-        input.position(p.mouseX,p.mouseY)
-        input.id('tempGeist')
     }
   }
 }, 'overlay')
+
+
+
+
+content(discourses)
+
+
+
 
 
 
