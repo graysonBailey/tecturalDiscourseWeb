@@ -2,77 +2,34 @@ import _ from 'lodash';
 import './style.css';
 import p5 from 'p5';
 import io from 'socket.io-client';
-import discourseJSON from './allgemeine.json';
 import dUnit from './dUnit.js';
-import shout from './shout.js';
+import back from './back.js';
+import content from './content.js';
 let path = require('path');
 
 const socket = io('http://localhost:3000');
 
+back()
+content()
 
-
-
-
-// new p5();
-
-
-
-
-//const containerElement = document.getElementById('p5-container');
-
-const sketch = (p) => {
-  let x = 100;
-  let y = 100;
-  let can;
-
-
+new p5((p) => {
   let tFont;
   let curs;
-  let discourse;
-  let pointers = [];
-  let position = 0
+  let pointers = [p.createVector(0, 0), p.createVector(0, 0)]
   let cnv;
-
-
 
   p.preload = function() {
     tFont = p.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
-   discourse = discourseJSON
   }
-
-
 
   p.setup = function() {
-    cnv = p.createCanvas(p.windowWidth, p.windowHeight)
 
+    cnv = p.createCanvas(p.displayWidth, p.displayHeight);
     console.log("setting up")
     p.textFont(tFont)
+    p.cursor("228ed835800150758bdcfe3a458531a8.png")
     socket.on('mouse', p.newDrawing)
-    p.refresh()
     p.fill(255)
-  }
-
-  p.refresh = function() {
-    p.background(0);
-
-
-    p.cursor("228ed835800150758bdcfe3a458531a8.png");
-    p.displayDiscourse();
-    pointers = [p.createVector(0, 0), p.createVector(0, 0)]
-
-    p.translate(0,position);
-  }
-
-  p.draw = function(){
-
-
-  }
-
-  p.windowResized = function() {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
-    //p.background(0);
-    p.refresh();
-    console.log("resized!")
   }
 
 
@@ -85,7 +42,6 @@ const sketch = (p) => {
 
 
   p.mouseDragged = function() {
-    //shout();
 
     var tex = "loser";
     var data = {
@@ -101,24 +57,7 @@ const sketch = (p) => {
   }
 
 
-  p.displayDiscourse = function() {
 
-    for(let i = 0; i <p.windowHeight; i+=25){
-      p.stroke(255)
-      p.strokeWeight(.1)
-      p.line(100,i,p.windowWidth-100,i)
-    }
-    p.noStroke();
-    p.fill(255);
-    p.textSize(16);
-    let units = discourse.units
-    for (let each in units) {
-      let unit = units[each];
-      if(unit.PosX > 0 && unit.PosX < p.windowWidth && unit.PosY+position > -30 && unit.PosY+position < p.windowHeight) {
-        p.text(unit.Base, unit.PosX, unit.PosY+position, 400, 1000)
-      }
-    }
-  }
 
   p.mouseClicked = function() {
     if (pointers[0].x + pointers[0].y == 0) {
@@ -140,10 +79,7 @@ const sketch = (p) => {
     p.setPositions()
   }
 
-  p.mouseWheel = function(event){
-  position-= event.delta/2;
-  p.refresh();
-  }
+
 
   p.keyPressed = function() {
     if(p.keyCode == p.ESCAPE){
@@ -162,18 +98,13 @@ const sketch = (p) => {
       let fs = p.fullscreen();
       p.fullscreen(!fs);
     } else if(document.getElementsByClassName('geist').length < 1){
-      let input = p.createElement('textarea').class('geist');
+      let input = p.createElement("textarea").class('geist')
         input.position(p.mouseX,p.mouseY)
         input.id('tempGeist')
     }
   }
+}, 'overlay')
 
-
-
-
-};
-
-let baseSketch = new p5(sketch);
 
 
 window.onload = function() {
