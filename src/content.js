@@ -34,7 +34,6 @@ export const content = (disc) => {
 
     j.preload = function() {
       tFont = j.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
-      discourse = discourseJSON
     }
 
     j.setup = () => {
@@ -71,16 +70,7 @@ export const content = (disc) => {
         j.clear()
         j.refresh()
       }
-
-      //save to local with fs package
-      //var data = JSON.stringify(words);
-      //fs.writeFile('words.json', data, finished)
-      //function finished(err){
-//console.log('all set.')
-      //}
     }
-    }
-
     j.mouseWheel = function(event) {
       j.clear()
       position -= event.delta / 5

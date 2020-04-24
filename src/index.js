@@ -5,11 +5,52 @@ import io from 'socket.io-client';
 import dUnit from './dUnit.js';
 import back from './back.js';
 import {content, discourseUnit, discourses, position} from './content.js';
-let path = require('path');
-
-console.log(discourses);
-
+const path = require('path');
 const socket = io('http://localhost:3000');
+
+
+async function postDATA(url, data){
+  const response = await fetch(url, {
+    method:'POST',
+    headers: {
+      'Content-Type':'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  return respond.json()
+}
+let fargon ={x:"hardbodies", m:"oh those movie boys"}
+postDATA('/api', fargon)
+  .then((fargon) =>{
+    console.log(fargon)
+  });
+
+
+
+async function getDATA(url){
+  const myReq = new Request(url,{method:'GET'})
+  const response = await fetch(myReq)
+  const body = await response.json()
+
+  return body
+}
+
+getDATA('/howdy').then(body => console.log(body))
+
+
+
+window.onload = function() {
+  document.getElementById('about-this-website').onclick = () => {
+    document.getElementById('about-window-overlay').classList.remove('disabled');
+    console.log("pressed it")
+  }
+  document.getElementById('about-window-overlay-close').onclick = () => {
+    document.getElementById('about-window-overlay').classList.add('disabled');
+    console.log("pressed it")
+  }
+
+}
+
 
 back()
 
@@ -30,7 +71,7 @@ new p5((p) => {
     console.log("setting up")
     p.textFont(tFont)
     p.cursor("228ed835800150758bdcfe3a458531a8.png")
-    socket.on('mouse', p.newDrawing)
+
     p.fill(255)
   }
 
@@ -44,7 +85,6 @@ new p5((p) => {
 
 
   p.mouseDragged = function() {
-
     var tex = "loser";
     var data = {
       x: p.mouseX,
@@ -52,7 +92,7 @@ new p5((p) => {
       talk: tex
     }
     socket.emit('mouse', data);
-    socket.emit('text', tex);
+
     p.noStroke();
     p.fill(47, 230, 240)
     p.ellipse(p.mouseX, p.mouseY, 20, 20);
@@ -62,6 +102,7 @@ new p5((p) => {
 
 
   p.mouseClicked = function() {
+
     if (pointers[0].x + pointers[0].y == 0) {
       pointers[0].x = p.mouseX
       pointers[0].y = p.mouseY
@@ -84,6 +125,7 @@ new p5((p) => {
 
 
   p.keyPressed = function() {
+
     if(p.keyCode === 32){
       console.log("spaced")
       if(document.getElementsByClassName('geist').length < 1){
@@ -101,7 +143,9 @@ new p5((p) => {
         let ttop = temp.offsetTop
         let tleft = temp.offsetLeft
         let tcont = temp.value
-        discourses.push(new discourseUnit(tcont, {x:tleft,y:ttop+position}, 0))
+        let tempDisc = new discourseUnit(tcont, {x:tleft,y:ttop+position}, 0);
+        discourses.push(tempDisc)
+        socket.emit('unit', tempDisc);
         temp.remove();
       }
     }
@@ -124,19 +168,3 @@ new p5((p) => {
 
 
 content(discourses)
-
-
-
-
-
-
-window.onload = function() {
-  document.getElementById('about-this-website').onclick = () => {
-    document.getElementById('about-window-overlay').classList.remove('disabled');
-    console.log("pressed it")
-  }
-  document.getElementById('about-window-overlay-close').onclick = () => {
-    document.getElementById('about-window-overlay').classList.add('disabled');
-    console.log("pressed it")
-  }
-}

@@ -1,36 +1,47 @@
-var express = require('express');
+const express = require('express')
+const Datastore = require('nedb')
+const socket = require('socket.io')
+const fetch = require('node-fetch')
+
+
+
 var app = express();
-
-
 app.use(express.static('dist'));
-
-var server = app.listen(3000,'0.0.0.0');
-
+app.use(express.json({ limit: '1mb' }));
+var server = app.listen(3000, '0.0.0.0');
+var io = socket(server);
 console.log("My socket server is running");
 
-var socket = require('socket.io');
-var io = socket(server);
+
+const database = new Datastore({filename:'allgemeineDiscourses.db',autoload:true});
+
+app.post('/api', (request,response) => {
+  console.log('I got a request')
+  console.log(request.body)
+  })
+
+app.get('/howdy', (request,response)=>{
+  response.send({d: "Howdy Doody", zeno: "for shame"})
+  })
+
+
 
 io.on('connection', newConnection);
 
-function newConnection(socket) {
-  console.log('new connection: ' + socket.id);
-
-  socket.on('mouse',mouseMsg);
-  //socket.on('text', textTalk);
-
-//  function textPlace(tex){
-//console.log(tex);
+  function newConnection(socket) {
+    console.log('new connection: ' + socket.id);
 
 
-  //}
+    socket.on('unit', data => {
+      console.log(data)
+      socket.broadcast.emit('unit', data)
+      database.insert(data);
 
-  function mouseMsg(data){
-    socket.broadcast.emit('mouse',data);
-    console.log(data);
-    console.log(data.talk);
-  //  console.log(tex);
-  }
+    });
 
 
+    socket.on('mouse',  data=> {
+      socket.broadcast.emit('mouse', data)
+      console.log(data)
+    });
 }
