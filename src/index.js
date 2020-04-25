@@ -45,7 +45,6 @@ async function getDATA(url){
 
 getDATA('/howdy').then(body => console.log("howdied"))
 
-
 window.onload = function() {
   document.getElementById('about-this-website').onclick = () => {
     document.getElementById('about-window-overlay').classList.remove('disabled');
@@ -78,7 +77,7 @@ new p5((p) => {
     console.log("setting up")
     p.textFont(tFont)
     p.cursor("228ed835800150758bdcfe3a458531a8.png")
-
+    socket.on('mouse', p.newDrawing)
     p.fill(255)
   }
 

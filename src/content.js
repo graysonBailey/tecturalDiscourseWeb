@@ -27,10 +27,11 @@ export async function getBase(url) {
 function loadDiscourseUnitsToArray(units) {
   for (let each in units) {
     let unit = units[each]
-    discourses.push(new discourseUnit(unit.c, unit.p, unit.t,unit.u)
-  }
+    discourses.push(new discourseUnit(unit.c, unit.p, unit.t,unit.u))
+    }
   console.log(discourses)
-}
+  }
+
 
 export const content = () => {
   let dU = discourses;
