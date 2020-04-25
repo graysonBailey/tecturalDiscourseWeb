@@ -8,7 +8,7 @@ export default function() {
     }
 
     d.refreshed = function() {
-      d.background(0);
+      d.background(0)
       for (let i = 0; i < d.windowHeight; i += 25) {
         d.stroke(255)
         d.strokeWeight(.1)
@@ -16,9 +16,8 @@ export default function() {
       }
     }
     d.windowResized = function() {
-      d.resizeCanvas(d.windowWidth, d.windowHeight);
+      d.resizeCanvas(d.windowWidth, d.windowHeight)
       d.refreshed()
-      console.log("resized!")
     }
   }, 'back')
 }

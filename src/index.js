@@ -17,7 +17,7 @@ async function postDATA(url, data){
     },
     body: JSON.stringify(data)
   });
-  return respond.json()
+  return response.json()
 }
 let fargon ={x:"hardbodies", m:"oh those movie boys"}
 postDATA('/api', fargon)
@@ -28,14 +28,34 @@ postDATA('/api', fargon)
 
 
 async function getDATA(url){
-  const myReq = new Request(url,{method:'GET'})
-  const response = await fetch(myReq)
-  const body = await response.json()
+  try{
+    const myReq = new Request(url,{method:'GET'})
+    const response = await fetch(myReq);
+    const body = await response.json();
+    console.log(await body);
+    return body;
+  } catch(error) {
+    console.log(error);
+    console.log("failure at howdy - client");
 
-  return body
+  }
 }
 
-getDATA('/howdy').then(body => console.log(body))
+async function getBase(url){
+  try{
+    const response = await fetch(url);
+    const body = await response.json();
+    return body
+  } catch(error) {
+    console.log(error);
+    console.log("failure at database retrieval - client");
+
+  }
+}
+
+getDATA('/howdy').then(body => console.log("base"+ body))
+getBase('/database').then(body => console.log(body))
+
 
 
 
