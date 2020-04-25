@@ -1,36 +1,42 @@
 import p5 from 'p5';
-import discourseJSON from './allgemeine2.json';
-
 export let discourses = [];
 export let position = 0;
 
 export class discourseUnit {
-  constructor(_content, pos, type) {
-    this._content = _content
-    this.pos = pos
-    this.type = type
+  constructor(c, p, t, u) {
+    this.c = c
+    this.p = p
+    this.t = t
+    this.u = u
   }
 }
 
-loadDiscourseUnitsToArray();
 
 
-function loadDiscourseUnitsToArray() {
+export async function getBase(url) {
+  try {
+    const response = await fetch(url)
+    const body = await response.json()
+    loadDiscourseUnitsToArray(body)
+  } catch (error) {
+    console.log(error)
+    console.log("failure at database retrieval - client")
+  }
+}
 
-  let units = discourseJSON.units
+function loadDiscourseUnitsToArray(units) {
   for (let each in units) {
     let unit = units[each]
-    discourses.push(new discourseUnit(unit.c, unit.p, unit.t))
+    discourses.push(new discourseUnit(unit.c, unit.p, unit.t,unit.u)
   }
-
+  console.log(discourses)
 }
 
-export const content = (disc) => {
-  let dU = disc
+export const content = () => {
+  let dU = discourses;
+  console.log(discourses[0])
   new p5((j) => {
     let tFont;
-
-    let discourse
 
     j.preload = function() {
       tFont = j.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
@@ -52,14 +58,14 @@ export const content = (disc) => {
       j.textSize(16)
       for (let each in dU) {
         let unit = dU[each]
-        if (unit.type == 0) {
+        if (unit.t == 0) {
           j.fill(255)
-        } else if (unit.type == 1) {
+        } else if (unit.t == 1) {
 
           j.fill(255, 0, 0)
         }
-        if (unit.pos.x > 0 && unit.pos.y < j.windowWidth && unit.pos.y + position > -30 && unit.pos.y + position < j.windowHeight) {
-          j.text(unit._content, unit.pos.x, unit.pos.y + position, 400, 1000)
+        if (unit.p.x > 0 && unit.p.y < j.windowWidth && unit.p.y + position > -30 && unit.p.y + position < j.windowHeight) {
+          j.text(unit.c, unit.p.x, unit.p.y + position, 400, 1000)
         }
       }
     }

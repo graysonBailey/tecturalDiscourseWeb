@@ -4,12 +4,12 @@ import p5 from 'p5';
 import io from 'socket.io-client';
 import dUnit from './dUnit.js';
 import back from './back.js';
-import {content, discourseUnit, discourses, position} from './content.js';
+import {content, discourseUnit, discourses, position, getBase} from './content.js';
 const path = require('path');
 const socket = io('http://localhost:3000');
 
 
-async function postDATA(url, data){
+async function postUNIT(url, data){
   const response = await fetch(url, {
     method:'POST',
     headers: {
@@ -19,20 +19,22 @@ async function postDATA(url, data){
   });
   return response.json()
 }
+
+
 let fargon ={x:"hardbodies", m:"oh those movie boys"}
-postDATA('/api', fargon)
+postUNIT('/api', fargon)
   .then((fargon) =>{
     console.log(fargon)
   });
 
 
+getBase('/database').then(body => console.log(body))
 
 async function getDATA(url){
   try{
     const myReq = new Request(url,{method:'GET'})
     const response = await fetch(myReq);
     const body = await response.json();
-    console.log(await body);
     return body;
   } catch(error) {
     console.log(error);
@@ -41,22 +43,7 @@ async function getDATA(url){
   }
 }
 
-async function getBase(url){
-  try{
-    const response = await fetch(url);
-    const body = await response.json();
-    return body
-  } catch(error) {
-    console.log(error);
-    console.log("failure at database retrieval - client");
-
-  }
-}
-
-getDATA('/howdy').then(body => console.log("base"+ body))
-getBase('/database').then(body => console.log(body))
-
-
+getDATA('/howdy').then(body => console.log("howdied"))
 
 
 window.onload = function() {
@@ -163,7 +150,7 @@ new p5((p) => {
         let ttop = temp.offsetTop
         let tleft = temp.offsetLeft
         let tcont = temp.value
-        let tempDisc = new discourseUnit(tcont, {x:tleft,y:ttop+position}, 0);
+        let tempDisc = new discourseUnit(tcont, {x:tleft,y:ttop+position}, 0,discourses.length);
         discourses.push(tempDisc)
         socket.emit('unit', tempDisc);
         temp.remove();

@@ -19,7 +19,11 @@ const database = new Datastore({
   filename: 'allgemeineDiscourses.db',
   autoload: true
 });
-database.insert({x:"oh oh oh2", y: "he he he2"})
+database.remove({ _id: 'aLHHrfzdHNgarb8T' }, {}, function (err, numRemoved) {
+  // numRemoved = 1
+});
+
+
 app.post('/api', (request, response) => {
   console.log('I got a request')
   console.log(request.body)
@@ -27,24 +31,25 @@ app.post('/api', (request, response) => {
 
 app.get('/howdy', (request, response) => {
   response.send([{
-    d: "Howdy Doody",
-    zeno: "for shame"
-  },
-{x: "ohm",
-place: "kiddo"}])
+      d: "Howdy Doody",
+      zeno: "for shame"
+    },
+    {
+      x: "ohm",
+      place: "kiddo"
+    }
+  ])
 })
 
 app.get('/database', (request, response) => {
-  database.find({},  (err, docs) => {
-      if (err) {
-        console.log("error in retrieval find process")
-        response.end();
-        return;
-      }
-      console.log("huh?")
-      console.log( docs)
-      response.json(docs)
-    })
+  database.find({}, (err, docs) => {
+    if (err) {
+      console.log("error in retrieval find process...")
+      response.end();
+      return;
+    }
+    response.json(docs)
+  })
 })
 
 
