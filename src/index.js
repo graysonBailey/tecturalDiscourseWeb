@@ -20,15 +20,13 @@ async function postUNIT(url, data){
   return response.json()
 }
 
+// let fargon ={x:"hardbodies", m:"oh those movie boys"}
+// postUNIT('/api', fargon)
+//   .then((fargon) =>{
+//     console.log(fargon)
+//   });
 
-let fargon ={x:"hardbodies", m:"oh those movie boys"}
-postUNIT('/api', fargon)
-  .then((fargon) =>{
-    console.log(fargon)
-  });
 
-
-getBase('/database').then(body => console.log(body))
 
 async function getDATA(url){
   try{
@@ -43,6 +41,7 @@ async function getDATA(url){
   }
 }
 
+
 getDATA('/howdy').then(body => console.log("howdied"))
 
 window.onload = function() {
@@ -54,13 +53,14 @@ window.onload = function() {
     document.getElementById('about-window-overlay').classList.add('disabled');
     console.log("pressed it")
   }
-
+  getBase('/database').then(body => console.log(body))
 }
 
 
 back()
 
 
+export const overlay = () => {
 new p5((p) => {
   let tFont;
   let curs;
@@ -78,11 +78,25 @@ new p5((p) => {
     p.textFont(tFont)
     p.cursor("228ed835800150758bdcfe3a458531a8.png")
     socket.on('mouse', p.newDrawing)
+    socket.on('unit', p.logUnit)
     p.fill(255)
   }
 
 
-  p.newDrawing = function(data, tex) {
+
+
+
+  p.logUnit = function(data){
+    discourses.push(new discourseUnit(data.c,data.p,data.t,data.u))
+    let placefiller = p.createElement("textarea").class('pend')
+    placefiller.attribute('placeholder','----//incoming//----')
+    placefiller.position(data.p.x,data.p.y+position)
+
+  }
+
+
+
+  p.newDrawing = function(data) {
     p.noStroke();
     p.fill(255, 0, 100);
     p.fill(230, 47, 240);
@@ -98,7 +112,6 @@ new p5((p) => {
       talk: tex
     }
     socket.emit('mouse', data);
-
     p.noStroke();
     p.fill(47, 230, 240)
     p.ellipse(p.mouseX, p.mouseY, 20, 20);
@@ -149,7 +162,7 @@ new p5((p) => {
         let ttop = temp.offsetTop
         let tleft = temp.offsetLeft
         let tcont = temp.value
-        let tempDisc = new discourseUnit(tcont, {x:tleft,y:ttop+position}, 0,discourses.length);
+        let tempDisc = new discourseUnit(tcont, {x:tleft,y:ttop-position}, 0,discourses.length);
         discourses.push(tempDisc)
         socket.emit('unit', tempDisc);
         temp.remove();
@@ -168,9 +181,10 @@ new p5((p) => {
       p.fullscreen(!fs);
     }
   }
-}, 'overlay')
+}, 'overlay')}
 
 
 
 
 content(discourses)
+overlay();

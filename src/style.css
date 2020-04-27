@@ -4,84 +4,124 @@
 }
 @font-face {
   font-family: OCRA-bold;
-  src: url(assets/miso-bold.otf);
+  src: url(assets/OCRAStd.otf);
 }
 
 textarea
 {
-   font-family:"OCRA";
-   font-size: 12px;
-   background-color:red;
    border:none;
    outline:none;
-   height:300;
-   width:400;
    resize:none;
+}
+
+.pend {
+  background-color: rgba(153,0,102,.5);
+  font-family: OCRA-bold;
+  font-size: 12px;
+  height:25;
+  width:400;
+  pointer-events: none;
+  color:white;
+}
+
+.geist {
+  background-color:red;
+  font-family:"OCRA";
+  font-size: 16px;
+  height:300;
+  width:400;
 }
 
 * {
 cursor : url("assets/swift.png"), pointer;
 }
 
-
-.overlay-content {
-  position: fixed;
-  top: 0;
-  height: 20px;
-  left: 0;
-  font-family: "OCRA";
-  font-size: 11pt;
-  padding: 5px 35px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background-color: black;
-  opacity: 0.5;
-  color: rgb(47,230,240);
-  z-index: 1;
-}
-
 .noselect {
 user-select: none;
 }
 
-.g-corntent {
+
+.top-cascade{
   position: fixed;
-  top: 0px;
-  height:0;
+  top: 0;
+  height: 20px;
   left: 0;
-  font-family: "OCRA";
-  font-size: 11pt;
+  padding: 5px 35px;
+  display: flex;
+  flex-direction: row;
+  background: rgba(0,0,0,.6);
+  z-index: 1;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+}
+
+.tc-con {
+  font-family: "OCRA-bold";
+  font-size: 7pt;
+  flex: 1;
+  align-self:center;
+  left:10vw;
+
+
+  color:white;
+}
+
+.overlay-top {
+
+}
+
+
+
+
+
+.left-cascade {
+  position: fixed;
+  top: 0;
+  height:100vh;
+  left: 10;
+  font-family: "OCRA-bold";
+  font-size: 8pt;
   padding: 5px 5px;
   display: flex;
   flex-direction: row;
   align-items: left;
   justify-content: left;
-  background-color: red;
+  z-index:1;
+}
+
+.lc-top {
+  top: 25vh;
+}
+
+.lc-mid {
+  top: 40vh;
+}
+
+
+.lc-con:hover{
+  background-color:#00ffff;
+  color:white;
+  font-size:6pt;
+}
+
+.lc-con{
+  color: #660000;
+  background-color:white;
+  font-size: 8pt;
   z-index:3;
+  padding: 5px 5px;
+  height:20px;
+  left: 10;
+  position: fixed;
+
 }
 
-.g-overlay-left {
 
-  transform: rotate(0deg) translateX(0px);
-  transform-origin: top right 0;
-  color: #D400D0;
-}
 
-.overlay-content-element {
-  flex: 1;
-}
 
-/* Custom style for each one of the 4 page borders */
-
-.overlay-top {
-  width: 120vw;
-}
 .overlay-left {
   width: calc(100vh - 70px);
-  transform: rotate(0deg) translateX(0px) translateY(0vh);
-  transform-origin: top right 0;
 }
 
 
@@ -104,7 +144,6 @@ user-select: none;
   padding: 0 5px;
 }
 
-/* Button styles */
 .button {  }
 .button:hover {
   color: blue;

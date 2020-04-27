@@ -27,10 +27,10 @@ export async function getBase(url) {
 function loadDiscourseUnitsToArray(units) {
   for (let each in units) {
     let unit = units[each]
-    discourses.push(new discourseUnit(unit.c, unit.p, unit.t,unit.u))
-    }
-  console.log(discourses)
+    discourses.push(new discourseUnit(unit.c, unit.p, unit.t, unit.u))
   }
+  console.log(discourses)
+}
 
 
 export const content = () => {
@@ -81,6 +81,12 @@ export const content = () => {
     j.mouseWheel = function(event) {
       j.clear()
       position -= event.delta / 5
+      let temp = document.getElementsByClassName('pend')
+      while (temp[0]) {
+        temp[0].parentNode.removeChild(temp[0])
+      }
+
+      console.log(position)
       j.refresh()
     }
   }, 'content')
