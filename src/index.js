@@ -17,7 +17,8 @@ import {
   particleSystem
 } from './particlesTest.js'
 const path = require('path');
-const socket = io('http://localhost:3000');
+const socket = io();
+// socket = io.connect('http://bc1e7fee.ngrok.io .')
 let mode = 0;
 
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
