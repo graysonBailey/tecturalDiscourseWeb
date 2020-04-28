@@ -26,15 +26,23 @@
   <div id="low" style="position: absolute; top: 0; left: 0;z-index:-1"></div>
   <div id="content" style="position: absolute; top: 0; left: 0;"></div>
   <div id="overlay" style="position: absolute; top: 0; left: 0;"></div>
+  <div id="test" style="position: absolute; top: 0; left: 0;"></div>
 
 
 
-  <div class="left-cascade noselect">
-    <div class="lc-top lc-con">
+  <div class="left-cascade noselect" id="leftCascade">
+    <div  id="sp-b" class="lc-screen lc-con button current">
+      <span>{. _ screen plane _ .}</span>
+    </div>
+    <div  id="gp-b" class="lc-top lc-con button">
       <span>{. _ geist plane _ .}</span>
     </div>
-    <div class="lc-mid lc-con">
-      <span><. _ relation plane _ .></span>
+    <div id = "rp-b"class="lc-mid lc-con button">
+      <span >< _ relation plane _ .></span>
+    </div>
+    <div  id="appendix" class="lc-bottom">
+      <span id="instructions"></span>
+
     </div>
 
   </div>
@@ -80,7 +88,7 @@
   <div id="about-window-overlay" class="window-overlay disabled animated">
     <div id="about-window-overlay-close" class="overlay-close-button"> ✕ </div>
     <div class="about-text">
-      =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+      =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-<br />
       Object Discour.se
       <br /><br /><br />
 

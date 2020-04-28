@@ -2,6 +2,7 @@ import p5 from 'p5';
 export let discourses = [];
 export let position = 0;
 
+
 export class discourseUnit {
   constructor(c, p, t, u) {
     this.c = c
@@ -10,8 +11,6 @@ export class discourseUnit {
     this.u = u
   }
 }
-
-
 
 export async function getBase(url) {
   try {
@@ -75,7 +74,7 @@ export const content = () => {
       if (j.keyCode == j.ENTER) {
         console.log("entered")
         j.clear()
-        j.refresh()
+        j.displayDiscourse()
       }
     }
     j.mouseWheel = function(event) {
@@ -86,8 +85,27 @@ export const content = () => {
         temp[0].parentNode.removeChild(temp[0])
       }
 
-      console.log(position)
+
       j.refresh()
     }
   }, 'content')
 }
+
+
+// const testSketch = function(n){
+//   let _thisn=n
+//
+// n.setup = function(){
+//   n.createCanvas(400,400)
+//   n.background(255)
+// }
+//
+// n.callout = function(){
+//   console.log("called from N!")
+//   _thisn.noFill();
+//
+// }
+//
+// }
+
+// export const  testing = new p5(testSketch);

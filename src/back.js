@@ -14,7 +14,7 @@ export default function() {
         // d.strokeWeight(.2)
         // d.stroke('#7fffd4')
         // d.line(100+10, i+2, d.windowWidth+10 - 100, i+2)
-        d.stroke('#FFFF33')
+        d.stroke(205)
         d.strokeWeight(.5);
         d.line(i, 0, i+25, d.windowHeight)
 
