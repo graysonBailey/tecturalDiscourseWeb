@@ -110,51 +110,6 @@ window.onload = function() {
 back()
 
 
-
-
-// let car = new p5(sketch => {
-//   let system;
-//   sketch.setup = function() {
-//     sketch.createCanvas(400, 300);
-//     system = new particleSystem(sketch, sketch.createVector(sketch.width/2, 50));
-//   };
-//   sketch.draw = function() {
-//     sketch.background(51);
-//     system.addParticle();
-//     system.run();
-//   }
-// },'test')
-
-
-
-
-
-
-
-
-
-// testing.callout()
-// testing.callout()
-
-
-
-export class textDraw {
-  constructor(p5) {
-    this.p5 = p5;
-
-  }
-
-
-
-}
-
-
-
-
-
-
-
-
 export const overlay = () => {
   new p5((p) => {
       let tFont;

@@ -4,12 +4,45 @@ export let position = 0;
 
 
 export class discourseUnit {
-  constructor(c, p, t, u) {
+  constructor(p5,c, p, t, u) {
+    this.p5 = p5
     this.c = c
     this.p = p
     this.t = t
     this.u = u
   }
+
+  display(){
+
+    this.p5.text(this.c,this.p.x,this.p.y,400,300)
+  }
+
+
+  isInside(){
+    return this.p.x> 0 && this.p.x < this.p5.width && this.p.y + position > -30 &&  this.p.y + position < this.p5.height
+  }
+}
+
+export class discourseSet{
+  constructor(p5, ){
+    this.p5 = p5
+    this.set = []
+  }
+
+  addUnit(c,p,t,u){
+    this.set.push(new discourseUnit(this.p5,c,p,t,u))
+  }
+
+  vis(){
+    for(each in this.set){
+      if(each.isInside()){
+          each.display()
+      }
+    }
+  }
+
+
+
 }
 
 export async function getBase(url) {
@@ -64,7 +97,7 @@ export const content = () => {
 
           j.fill(255, 0, 0)
         }
-        if (unit.p.x > 0 && unit.p.y < j.windowWidth && unit.p.y + position > -30 && unit.p.y + position < j.windowHeight) {
+        if (unit.p.x > 0 && unit.p.x < j.windowWidth && unit.p.y + position > -30 && unit.p.y + position < j.windowHeight) {
           j.text(unit.c, unit.p.x, unit.p.y + position, 400, 1000)
         }
       }
@@ -90,22 +123,3 @@ export const content = () => {
     }
   }, 'content')
 }
-
-
-// const testSketch = function(n){
-//   let _thisn=n
-//
-// n.setup = function(){
-//   n.createCanvas(400,400)
-//   n.background(255)
-// }
-//
-// n.callout = function(){
-//   console.log("called from N!")
-//   _thisn.noFill();
-//
-// }
-//
-// }
-
-// export const  testing = new p5(testSketch);

@@ -14,10 +14,6 @@ textarea
    resize:none;
 }
 
-/* .current{
-  background-color:red !important;
-} */
-
 .pend {
   background-color: rgba(153,0,102,.5);
   font-family: OCRA-bold;
