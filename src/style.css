@@ -24,12 +24,22 @@ textarea
   color:white;
 }
 
+
+
 .geist {
   background-color:red;
   font-family:"OCRA";
   font-size: 16px;
   height:300;
   width:400;
+}
+.response{
+  background-color:rgb(120,47,220) !important;
+  color:white !important;
+}
+.quotation{
+  background-color:rgb(190,190,190) !important;
+  color:black;
 }
 
 * {

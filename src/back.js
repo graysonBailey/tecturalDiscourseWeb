@@ -1,7 +1,6 @@
 import p5 from 'p5';
 
-export default function() {
-  new p5((d) => {
+export const back = new p5((d) => {
     d.setup = () => {
       d.createCanvas(d.windowWidth, d.windowHeight)
       d.refreshed()
@@ -27,4 +26,3 @@ export default function() {
       d.refreshed()
     }
   }, 'back')
-}

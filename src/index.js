@@ -2,12 +2,16 @@ import _ from 'lodash';
 import './style.css';
 import p5 from 'p5';
 import io from 'socket.io-client';
+import $ from 'jQuery'
 import dUnit from './dUnit.js';
-import back from './back.js';
+import {
+  back
+} from './back.js';
 import {
   content,
-  discourseUnit,
   discourses,
+  discourseUnit,
+  discourseSet,
   position,
   getBase
 } from './content.js';
@@ -18,7 +22,6 @@ import {
 } from './particlesTest.js'
 const path = require('path');
 const socket = io();
-// socket = io.connect('http://bc1e7fee.ngrok.io .')
 let mode = 0;
 
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
@@ -62,7 +65,8 @@ async function getDATA(url) {
 
 
 
-getDATA('/howdy').then(body => console.log("howdied"))
+//getDATA('/howdy').then(body => console.log("howdied"))
+
 
 window.onload = function() {
   document.getElementById('about-this-website').onclick = () => {
@@ -99,16 +103,9 @@ window.onload = function() {
     mode = 0
     switchModeInstructions(mode)
   }
+  getBase('/database').then(body => console.log(body))
 
-  getBase('/database')
-  // .then(body => console.log(body))
 }
-
-
-
-
-back()
-
 
 export const overlay = () => {
   new p5((p) => {
@@ -137,11 +134,10 @@ export const overlay = () => {
 
 
       p.logUnit = function(data) {
-        discourses.push(new discourseUnit(data.c, data.p, data.t, data.u))
+        discourses.addUnit(data.c, data.p, data.t, data.u)
         let placefiller = p.createElement("textarea").class('pend')
         placefiller.attribute('placeholder', '----//incoming//----')
         placefiller.position(data.p.x, data.p.y + position)
-
       }
 
 
@@ -177,11 +173,9 @@ export const overlay = () => {
         if (pointers[0].x + pointers[0].y == 0) {
           pointers[0].x = p.mouseX
           pointers[0].y = p.mouseY
-          // console.log("POINTER ONE" + pointers[0])
         } else {
           pointers[1].x = p.mouseX
           pointers[1].y = p.mouseY
-          // console.log("POINTER TWO" + pointers[1])
           p.stroke('#ffA908');
           p.strokeWeight(1);
           p.line(pointers[0].x, pointers[0].y, pointers[1].x, pointers[1].y);
@@ -203,6 +197,7 @@ export const overlay = () => {
             if (document.getElementsByClassName('geist').length < 1) {
               let input = p.createElement("textarea").class('geist')
               input.position(p.mouseX, p.mouseY)
+
               console.log(input.position())
               input.id('tempGeist')
             }
@@ -218,12 +213,17 @@ export const overlay = () => {
             let ttop = temp.offsetTop
             let tleft = temp.offsetLeft
             let tcont = temp.value
-            let tempDisc = new discourseUnit(tcont, {
-              x: tleft,
-              y: ttop - position
-            }, 0, discourses.length);
-            discourses.push(tempDisc)
-            socket.emit('unit', tempDisc);
+            let tDisc = {
+              c: tcont,
+              p: {
+                x: tleft,
+                y: ttop - position
+              },
+              t: 0,
+              u: discourses.set.length
+            }
+            discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u)
+            socket.emit('unit', tDisc);
             temp.remove();
           }
         }
@@ -247,7 +247,25 @@ export const overlay = () => {
     'overlay')
 }
 
+let checkInput = function() {
+  let el = document.getElementById("tempGeist")
+  if (el != null) {
+    let tempText = el.value
+    if (tempText.includes("r/")) {
+      el.classList.remove('quotation')
+      el.classList.add('response');
 
+    } else if (tempText.includes("q/")) {
+      el.classList.remove('response');
+      el.classList.add('quotation')
+    }
+  }
+}
 
-overlay();
-content();
+overlay()
+
+$(document).on('keydown', '.geist', function() {
+
+  checkInput()
+
+})
