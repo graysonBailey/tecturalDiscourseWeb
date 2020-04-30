@@ -4,9 +4,7 @@ import p5 from 'p5';
 import io from 'socket.io-client';
 import $ from 'jQuery'
 import dUnit from './dUnit.js';
-import {
-  back
-} from './back.js';
+import {back} from './back.js';
 import {
   content,
   discourses,
@@ -22,7 +20,7 @@ import {
 } from './particlesTest.js'
 const path = require('path');
 const socket = io();
-let mode = 0;
+let mode = 0
 
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
 
@@ -104,6 +102,7 @@ window.onload = function() {
     switchModeInstructions(mode)
   }
   getBase('/database').then(body => console.log(body))
+  //discourses.vis()
 
 }
 
@@ -169,17 +168,8 @@ export const overlay = () => {
 
 
       p.mouseClicked = function() {
-
-        if (pointers[0].x + pointers[0].y == 0) {
-          pointers[0].x = p.mouseX
-          pointers[0].y = p.mouseY
-        } else {
-          pointers[1].x = p.mouseX
-          pointers[1].y = p.mouseY
-          p.stroke('#ffA908');
-          p.strokeWeight(1);
-          p.line(pointers[0].x, pointers[0].y, pointers[1].x, pointers[1].y);
-          pointers[0] = p.createVector(0, 0);
+        if(mode == 2){
+          discourses.concern()
         }
     }
 
@@ -223,6 +213,7 @@ export const overlay = () => {
               u: discourses.set.length
             }
             discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u)
+            discourses.vis()
             socket.emit('unit', tDisc);
             temp.remove();
           }

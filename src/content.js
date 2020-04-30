@@ -4,84 +4,150 @@ export let position = 0;
 
 
 export class discourseUnit {
-  constructor(p5,c, p, t, u) {
+  constructor(p5, c, p, t, u) {
     this.p5 = p5
     this.c = c
     this.p = p
     this.t = t
     this.u = u
     this.bound = this.constructBound()
-    this.ref= ""
+    this.centroid = this.p5.createVector(this.p.x + (this.wid / 2), this.p.y + (this.bound.z / 2))
+    this.ref = ""
     this.body = this.splitBody()
-
+    this.wid = 400
+    this.isHighlighted = false;
+    this.isRelating = false;
+    this.relatesTo = []
   }
 
-  splitBody(){
-
+  splitBody() {
     let parts = this.c.split("//")
-    if(parts[1] != null){
-    this.ref = parts[1]
-  }
+    if (parts[1] != null) {
+      this.ref = parts[1]
+    }
     return parts[0]
-
   }
 
-
-
-  constructBound(){
-    let lines = Math.round(this.c.length/70)
-    let tbound = this.p5.createVector(this.p.x-5,this.p.y-5, (lines+1)*18)
+  constructBound() {
+    let lines = Math.round(this.c.length / 70)
+    let tbound = this.p5.createVector(this.p.x - 5, this.p.y - 5, (lines + 1) * 18)
     return tbound
   }
 
-  display(){
-let color
-    if(this.c.charAt(0) == 'r' &&this.c.charAt(1) == '/'){
-      color = this.p5.color(255,0,0)
-    } else if(this.c.charAt(0) == 'q' &&this.c.charAt(1) == '/'){
+  display() {
+    let color
+    let bcolor
+    if (this.c.charAt(0) == 'r' && this.c.charAt(1) == '/') {
+      color = this.p5.color(255, 0, 0)
+    } else if (this.c.charAt(0) == 'q' && this.c.charAt(1) == '/') {
       color = this.p5.color(255)
     } else {
-      color = this.p5.color(120,120,120)
+      color = this.p5.color(120, 120, 120)
     }
+    this.displayBound(color, 2);
     this.p5.fill(color)
     this.p5.noStroke()
     this.p5.textSize(16)
-    this.p5.text(this.body,this.p.x,this.p.y+position,400,this.bound.z)
+    this.p5.text(this.body, this.p.x, this.p.y + position, this.wid, this.bound.z)
     this.p5.textSize(14)
-    this.p5.text(this.ref,this.p.x,this.p.y+position+this.bound.z,400,300)
-    this.p5.noFill()
-    this.p5.stroke(color)
-    this.p5.strokeWeight(2)
-    this.p5.rect(this.bound.x,this.bound.y+position,400,this.bound.z)
+    this.p5.text(this.ref, this.p.x, this.p.y + position + this.bound.z, this.wid, 300)
   }
 
+  displayBound(color, size) {
+    this.p5.fill(0)
+    this.p5.stroke(color)
+    this.p5.strokeWeight(size)
+    this.p5.rect(this.bound.x, this.bound.y + position, this.wid, this.bound.z)
+  }
 
-  isInside(){
-    return this.p.x> 0 && this.p.x < this.p5.width && this.p.y + position > -30 &&  this.p.y + position < this.p5.height
+  concernedHighlight() {
+    if (this.isHighlighted == false) {
+      this.p5.stroke('#00ffff');
+      this.p5.strokeWeight(1)
+      this.p5.noFill();
+      let cHx = Array(15).fill().map(() => Math.round(Math.random() * this.wid) + this.bound.x - 50)
+      let cHy = Array(15).fill().map(() => Math.round(Math.random() * this.bound.z) + this.bound.y + position - 50)
+
+      this.p5.beginShape();
+      for (let i = 0; i < cHx.length; i++) {
+        this.p5.vertex(cHx[i], cHy[i])
+      }
+      this.p5.endShape()
+    }
+    this.isHighlighted = true;
+
+  }
+
+  isInsideScreen() {
+    return this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
+  }
+
+  isOfConcern() {
+    let concern = this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
+    if (!concern) {
+      this.isHighlighted = false
+    }
+    return this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
   }
 }
 
-export class discourseSet{
-  constructor(p5){
+export class discourseSet {
+  constructor(p5) {
     this.p5 = p5
     this.set = []
+    this.pendingRelation = []
   }
 
-  addUnit(c,p,t,u){
-    this.set.push(new discourseUnit(this.p5,c,p,t,u));
+  addUnit(c, p, t, u) {
+    this.set.push(new discourseUnit(this.p5, c, p, t, u));
   }
 
-  vis(){
-    for(let each in this.set){
-      if(this.set[each].isInside()){
-
-          this.set[each].display()
+  groupRelations() {
+    let theRelated = this.set.filter(item => item.relatesTo.length)
+    for (let each in theRelated) {
+      let ties = theRelated[each].relatesTo
+      let connections = this.set.filter(item => {
+        return ties.includes(item.u)
+      })
+      for (let those in connections) {
+        this.p5.noFill()
+        this.p5.stroke('#ffA908')
+        this.p5.strokeWeight(2)
+        this.p5.line(theRelated[each].p.x+200, theRelated[each].centroid.y + position, connections[those].p.x+200,connections[those].centroid.y+position)
       }
     }
+
   }
 
+  vis() {
+    this.groupRelations();
+    let insiders = this.set.filter(item => item.isInsideScreen())
+    for (let each in insiders) {
+      insiders[each].display()
+    }
+
+  }
+
+  concern() {
+    let theConcerned = this.set.filter(item => item.isOfConcern())
+    for (let each in theConcerned) {
+      theConcerned[each].concernedHighlight()
 
 
+      if (!this.pendingRelation.length) {
+        this.pendingRelation.push(theConcerned[each])
+      } else {
+        if (this.pendingRelation[0].u != theConcerned[each].u) {
+          this.pendingRelation[0].relatesTo.push(theConcerned[each].u)
+        }
+        console.log(this.pendingRelation[0].relatesTo)
+        this.vis()
+        this.pendingRelation = []
+
+      }
+
+    }
+  }
 }
 
 export async function getBase(url) {
@@ -110,58 +176,38 @@ function loadDiscourseUnitsToArray(units) {
 
 export const content = new p5((j) => {
 
-    console.log(discourses[0])
-    let tFont;
+  console.log(discourses[0])
+  let tFont;
 
-    j.preload = function() {
-      tFont = j.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
-    }
+  j.preload = function() {
+    tFont = j.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
+  }
 
-    j.setup = () => {
-      j.createCanvas(j.displayWidth, j.displayHeight)
-      j.textFont(tFont)
-      //j.refresh()
-      console.log("content BEGINS")
-    }
+  j.setup = () => {
+    j.createCanvas(j.displayWidth, j.displayHeight)
+    j.textFont(tFont)
+    //  console.log("content BEGINS")
+  }
 
-    j.refresh = function() {
-      j.clear();
-      discourses.vis()
-    }
+  j.refresh = function() {
+    j.clear();
+    discourses.vis()
+  }
 
-    // j.displayDiscourse = function() {
-    //   j.noStroke()
-    //
-    //   j.textSize(16)
-    //   for (let each in dU) {
-    //     let unit = dU[each]
-    //     if (unit.t == 0) {
-    //       j.fill(255)
-    //     } else if (unit.t == 1) {
-    //
-    //       j.fill(255, 0, 0)
-    //     }
-    //     if (unit.p.x > 0 && unit.p.x < j.windowWidth && unit.p.y + position > -30 && unit.p.y + position < j.windowHeight) {
-    //       j.text(unit.c, unit.p.x, unit.p.y + position, 400, 1000)
-    //     }
-    //   }
-    // }
-
-    j.keyPressed = function() {
-      if (j.keyCode == j.ENTER) {
-        console.log("entered")
-        j.refresh()
-      }
-    }
-    j.mouseWheel = function(event) {
-      j.clear()
-      position -= event.delta / 5
-      let temp = document.getElementsByClassName('pend')
-      while (temp[0]) {
-        temp[0].parentNode.removeChild(temp[0])
-      }
-
-
+  j.keyPressed = function() {
+    if (j.keyCode == j.ENTER) {
+      console.log("entered")
       j.refresh()
     }
-  }, 'content')
+  }
+
+  j.mouseWheel = function(event) {
+    j.clear()
+    position -= event.delta / 5
+    let temp = document.getElementsByClassName('pend')
+    while (temp[0]) {
+      temp[0].parentNode.removeChild(temp[0])
+    }
+    j.refresh()
+  }
+}, 'content')
