@@ -19,11 +19,9 @@ import {
   particleSystem
 } from './particlesTest.js'
 const path = require('path');
-const socket = io();
-let mode = 0
-
+export const socket = io();
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
-
+let mode = 0
 
 async function postUNIT(url, data) {
   const response = await fetch(url, {
@@ -35,36 +33,6 @@ async function postUNIT(url, data) {
   });
   return response.json()
 }
-
-// let fargon ={x:"hardbodies", m:"oh those movie boys"}
-// postUNIT('/api', fargon)
-//   .then((fargon) =>{
-//     console.log(fargon)
-//   });
-
-
-
-async function getDATA(url) {
-  try {
-    const myReq = new Request(url, {
-      method: 'GET'
-    })
-    const response = await fetch(myReq);
-    const body = await response.json();
-    return body;
-  } catch (error) {
-    console.log(error);
-    console.log("failure at howdy - client");
-
-  }
-}
-
-
-
-
-
-//getDATA('/howdy').then(body => console.log("howdied"))
-
 
 window.onload = function() {
   document.getElementById('about-this-website').onclick = () => {
@@ -102,8 +70,6 @@ window.onload = function() {
     switchModeInstructions(mode)
   }
   getBase('/database').then(body => console.log(body))
-  //discourses.vis()
-
 }
 
 export const overlay = () => {
@@ -118,7 +84,6 @@ export const overlay = () => {
       }
 
       p.setup = function() {
-
         cnv = p.createCanvas(p.displayWidth, p.displayHeight);
         console.log("setting up")
         p.textFont(tFont)
@@ -128,10 +93,6 @@ export const overlay = () => {
         p.fill(255)
       }
 
-
-
-
-
       p.logUnit = function(data) {
         discourses.addUnit(data.c, data.p, data.t, data.u)
         let placefiller = p.createElement("textarea").class('pend')
@@ -139,15 +100,12 @@ export const overlay = () => {
         placefiller.position(data.p.x, data.p.y + position)
       }
 
-
-
       p.newDrawing = function(data) {
         p.noStroke();
         p.fill(255, 0, 100);
         p.fill(230, 47, 240);
         p.text(data.talk, data.x, data.y);
       }
-
 
       p.mouseDragged = function() {
         if (mode == 0) {
@@ -164,9 +122,6 @@ export const overlay = () => {
         }
       }
 
-
-
-
       p.mouseClicked = function() {
         if(mode == 2){
           discourses.concern()
@@ -176,8 +131,6 @@ export const overlay = () => {
       p.mouseMoved = function() {
         p.setPositions()
       }
-
-
 
       p.keyPressed = function() {
 
@@ -220,9 +173,6 @@ export const overlay = () => {
         }
       }
 
-
-
-
       p.setPositions = function() {
         document.getElementById("x-coord").innerHTML = p.mouseX
         document.getElementById("y-coord").innerHTML = p.mouseY
@@ -234,8 +184,7 @@ export const overlay = () => {
           p.fullscreen(!fs);
         }
       }
-    },
-    'overlay')
+    },'overlay')
 }
 
 let checkInput = function() {

@@ -70,8 +70,10 @@ function newConnection(socket) {
   })
 
   socket.on('relation', data => {
+    console.log("got relation")
+    console.log(data)
 
-    database.update({ u: data.u }, { $push: { r: 'banana' } }, {}, function () {
+    database.update({ u: data.u }, { $push: { r: data.r } }, {}, function () {
   // Now the fruits array is ['apple', 'orange', 'pear', 'banana']
 })
 

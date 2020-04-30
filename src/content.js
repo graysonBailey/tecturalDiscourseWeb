@@ -1,23 +1,24 @@
 import p5 from 'p5';
+import {socket} from './index.js'
 export let discourses = [];
 export let position = 0;
 
 
 export class discourseUnit {
-  constructor(p5, c, p, t, u) {
+  constructor(p5, c, p, t, u,r) {
     this.p5 = p5
     this.c = c
     this.p = p
     this.t = t
     this.u = u
     this.bound = this.constructBound()
+    this.wid = 400
     this.centroid = this.p5.createVector(this.p.x + (this.wid / 2), this.p.y + (this.bound.z / 2))
     this.ref = ""
     this.body = this.splitBody()
-    this.wid = 400
-    this.isHighlighted = false;
-    this.isRelating = false;
-    this.relatesTo = []
+
+    this.isHighlighted = false
+    this.relatesTo = r
   }
 
   splitBody() {
@@ -44,7 +45,7 @@ export class discourseUnit {
     } else {
       color = this.p5.color(120, 120, 120)
     }
-    this.displayBound(color, 2);
+    this.displayBound(color, 2)
     this.p5.fill(color)
     this.p5.noStroke()
     this.p5.textSize(16)
@@ -62,19 +63,18 @@ export class discourseUnit {
 
   concernedHighlight() {
     if (this.isHighlighted == false) {
-      this.p5.stroke('#00ffff');
+      this.p5.stroke('#00ffff')
       this.p5.strokeWeight(1)
-      this.p5.noFill();
+      this.p5.noFill()
       let cHx = Array(15).fill().map(() => Math.round(Math.random() * this.wid) + this.bound.x - 50)
       let cHy = Array(15).fill().map(() => Math.round(Math.random() * this.bound.z) + this.bound.y + position - 50)
-
-      this.p5.beginShape();
+      this.p5.beginShape()
       for (let i = 0; i < cHx.length; i++) {
         this.p5.vertex(cHx[i], cHy[i])
       }
       this.p5.endShape()
     }
-    this.isHighlighted = true;
+    this.isHighlighted = true
 
   }
 
@@ -98,8 +98,8 @@ export class discourseSet {
     this.pendingRelation = []
   }
 
-  addUnit(c, p, t, u) {
-    this.set.push(new discourseUnit(this.p5, c, p, t, u));
+  addUnit(c, p, t, u, r) {
+    this.set.push(new discourseUnit(this.p5, c, p, t, u, r))
   }
 
   groupRelations() {
@@ -112,7 +112,11 @@ export class discourseSet {
       for (let those in connections) {
         this.p5.noFill()
         this.p5.stroke('#ffA908')
-        this.p5.strokeWeight(2)
+        if(document.getElementById('rp-b').classList.contains('current')){
+          this.p5.strokeWeight(3)
+        } else {
+            this.p5.strokeWeight(.8)
+        }
         this.p5.line(theRelated[each].p.x+200, theRelated[each].centroid.y + position, connections[those].p.x+200,connections[those].centroid.y+position)
       }
     }
@@ -120,7 +124,7 @@ export class discourseSet {
   }
 
   vis() {
-    this.groupRelations();
+    this.groupRelations()
     let insiders = this.set.filter(item => item.isInsideScreen())
     for (let each in insiders) {
       insiders[each].display()
@@ -139,6 +143,11 @@ export class discourseSet {
       } else {
         if (this.pendingRelation[0].u != theConcerned[each].u) {
           this.pendingRelation[0].relatesTo.push(theConcerned[each].u)
+          let data = {
+            u:this.pendingRelation[0].u,
+            r:theConcerned[each].u
+          }
+          socket.emit('relation', data)
         }
         console.log(this.pendingRelation[0].relatesTo)
         this.vis()
@@ -164,19 +173,16 @@ export async function getBase(url) {
 }
 
 function loadDiscourseUnitsToArray(units) {
-  console.log("was it after here?")
   discourses = new discourseSet(content)
   for (let each in units) {
     let unit = units[each]
-    discourses.addUnit(unit.c, unit.p, unit.t, unit.u)
+    discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r)
   }
-  console.log(discourses.set)
 }
 
 
 export const content = new p5((j) => {
 
-  console.log(discourses[0])
   let tFont;
 
   j.preload = function() {
@@ -186,7 +192,6 @@ export const content = new p5((j) => {
   j.setup = () => {
     j.createCanvas(j.displayWidth, j.displayHeight)
     j.textFont(tFont)
-    //  console.log("content BEGINS")
   }
 
   j.refresh = function() {
@@ -196,8 +201,7 @@ export const content = new p5((j) => {
 
   j.keyPressed = function() {
     if (j.keyCode == j.ENTER) {
-      console.log("entered")
-      j.refresh()
+        j.refresh()
     }
   }
 
