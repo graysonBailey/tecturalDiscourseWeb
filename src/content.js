@@ -11,7 +11,22 @@ export class discourseUnit {
     this.t = t
     this.u = u
     this.bound = this.constructBound()
+    this.ref= ""
+    this.body = this.splitBody()
+
   }
+
+  splitBody(){
+
+    let parts = this.c.split("//")
+    if(parts[1] != null){
+    this.ref = parts[1]
+  }
+    return parts[0]
+
+  }
+
+
 
   constructBound(){
     let lines = Math.round(this.c.length/70)
@@ -20,12 +35,22 @@ export class discourseUnit {
   }
 
   display(){
-    this.p5.fill(255)
+let color
+    if(this.c.charAt(0) == 'r' &&this.c.charAt(1) == '/'){
+      color = this.p5.color(255,0,0)
+    } else if(this.c.charAt(0) == 'q' &&this.c.charAt(1) == '/'){
+      color = this.p5.color(255)
+    } else {
+      color = this.p5.color(120,120,120)
+    }
+    this.p5.fill(color)
     this.p5.noStroke()
     this.p5.textSize(16)
-    this.p5.text(this.c,this.p.x,this.p.y+position,400,300)
+    this.p5.text(this.body,this.p.x,this.p.y+position,400,this.bound.z)
+    this.p5.textSize(14)
+    this.p5.text(this.ref,this.p.x,this.p.y+position+this.bound.z,400,300)
     this.p5.noFill()
-    this.p5.stroke(255)
+    this.p5.stroke(color)
     this.p5.strokeWeight(2)
     this.p5.rect(this.bound.x,this.bound.y+position,400,this.bound.z)
   }

@@ -2,7 +2,7 @@ import p5 from 'p5';
 
 export const back = new p5((d) => {
     d.setup = () => {
-      d.createCanvas(d.windowWidth, d.windowHeight)
+      d.createCanvas(d.windowWidth, d.windowHeight+50)
       d.refreshed()
     }
 
@@ -15,7 +15,7 @@ export const back = new p5((d) => {
         // d.line(100+10, i+2, d.windowWidth+10 - 100, i+2)
         d.stroke(205)
         d.strokeWeight(.5);
-        d.line(i, 0, i+25, d.windowHeight)
+        d.line(i, 0, i+25, d.windowHeight+50)
 
         // d.line(0, i+5, d.windowWidth, i+5)
         // d.line(0, (i/2)+5, d.windowWidth, (i/2)+5)

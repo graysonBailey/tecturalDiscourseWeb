@@ -181,7 +181,7 @@ export const overlay = () => {
           p.line(pointers[0].x, pointers[0].y, pointers[1].x, pointers[1].y);
           pointers[0] = p.createVector(0, 0);
         }
-      }
+    }
 
       p.mouseMoved = function() {
         p.setPositions()
