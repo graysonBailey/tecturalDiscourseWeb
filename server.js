@@ -52,6 +52,8 @@ app.get('/database', (request, response) => {
   })
 })
 
+app.post('/database')
+
 
 
 io.on('connection', newConnection);
@@ -65,7 +67,15 @@ function newConnection(socket) {
     socket.broadcast.emit('unit', data)
     database.insert(data);
 
-  });
+  })
+
+  socket.on('relation', data => {
+
+    database.update({ u: data.u }, { $push: { r: 'banana' } }, {}, function () {
+  // Now the fruits array is ['apple', 'orange', 'pear', 'banana']
+})
+
+  })
 
 
   socket.on('mouse', data => {
