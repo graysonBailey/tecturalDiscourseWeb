@@ -199,12 +199,6 @@ export const content = new p5((j) => {
     discourses.vis()
   }
 
-  j.keyPressed = function() {
-    if (j.keyCode == j.ENTER) {
-        j.refresh()
-    }
-  }
-
   j.mouseWheel = function(event) {
     j.clear()
     position -= event.delta / 5
