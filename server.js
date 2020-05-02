@@ -19,10 +19,6 @@ const database = new Datastore({
   filename: 'allgemeineDiscourses.db',
   autoload: true
 });
-database.remove({ _id: 'aLHHrfzdHNgarb8T' }, {}, function (err, numRemoved) {
-  // numRemoved = 1
-});
-
 
 app.post('/api', (request, response) => {
   console.log('I got a request')
@@ -73,6 +69,7 @@ function newConnection(socket) {
     console.log("got relation")
     console.log(data)
 
+    if
     database.update({ u: data.u }, { $push: { r: data.r } }, {}, function () {
   // Now the fruits array is ['apple', 'orange', 'pear', 'banana']
 })

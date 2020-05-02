@@ -198,9 +198,7 @@ export class discourseSet {
         console.log(this.pendingRelation[0].relatesTo)
         this.vis()
         this.pendingRelation = []
-
       }
-
     }
   }
 }
