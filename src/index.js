@@ -1,29 +1,25 @@
 import _ from 'lodash';
 import './style.css';
-import p5 from 'p5';
+import p5 from 'p5/lib/p5.min.js';
 import io from 'socket.io-client';
 import $ from 'jQuery'
 import dUnit from './dUnit.js';
 import {
-  back
-} from './back.js';
+  back,
+  content
+} from './threeCanvases.js';
 import {
-  content,
   discourses,
   discourseUnit,
   discourseSet,
-  position,
   getBase
 } from './content.js';
 import switchModeInstructions from './modeSwitch.js'
-import {
-  particle,
-  particleSystem
-} from './particlesTest.js'
 const path = require('path');
 export const socket = io();
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
 let mode = 0
+export let position = 0;
 
 async function postUNIT(url, data) {
   const response = await fetch(url, {
@@ -36,7 +32,17 @@ async function postUNIT(url, data) {
   return response.json()
 }
 
+
+
+
+
+
+
+
 window.onload = function() {
+
+document.getElementById('overlay').addEventListener("wheel", event => reposition(event));
+
   document.getElementById('about-this-website').onclick = () => {
     document.getElementById('about-window-overlay').classList.remove('disabled');
     console.log("pressed it")
@@ -96,10 +102,8 @@ export const overlay = () => {
     }
 
     p.logUnit = function(data) {
-      discourses.addUnit(data.c, data.p, data.t, data.u)
-      let placefiller = p.createElement("textarea").class('pend')
-      placefiller.attribute('placeholder', '----//incoming//----')
-      placefiller.position(data.p.x, data.p.y + position)
+      discourses.addUnit(data.c, data.p, data.t, data.u,data.r)
+      discourses.vis()
     }
 
     p.newDrawing = function(data) {
@@ -154,8 +158,8 @@ export const overlay = () => {
         temp.remove()
         tempButton.remove()
         discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u, [])
-        discourses.vis()
         socket.emit('unit', tDisc);
+        discourses.vis()
       } else {
         temp.placeholder = '!!! empty unit cannot be submitted \r\n \r\n fill the area with discursive content \r\n \r\n ...or press ESCAPE to remove the input area'
       }
@@ -218,8 +222,13 @@ let checkInput = function() {
 
 overlay()
 
+let reposition = function(event){
+  content.clear()
+  const delta = Math.sign(event.deltaY);
+  position = position - (delta*30)
+  discourses.vis()
+}
+
 $(document).on('keydown', '.geist', function() {
-
   checkInput()
-
 })

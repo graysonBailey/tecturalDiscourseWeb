@@ -1,24 +1,46 @@
-import p5 from 'p5';
-import {socket} from './index.js'
+import p5 from 'p5/lib/p5.min.js';
+import {
+  socket
+} from './index.js'
+import {
+  content
+} from './threeCanvases.js'
+import {
+  position
+} from './index.js'
 export let discourses = [];
-export let position = 0;
+
 
 
 export class discourseUnit {
-  constructor(p5, c, p, t, u,r) {
+  constructor(p5, c, p, t, u, r) {
     this.p5 = p5
     this.c = c
     this.p = p
-    this.t = t
+    this.t = this.checkType()
     this.u = u
     this.bound = this.constructBound()
     this.wid = 400
     this.centroid = this.p5.createVector(this.p.x + (this.wid / 2), this.p.y + (this.bound.z / 2))
     this.ref = ""
     this.body = this.splitBody()
-
+    this.new = true;
     this.isHighlighted = false
     this.relatesTo = r
+  }
+
+  checkType(){
+    if(this.c.charAt(0) == 'r' && this.c.charAt(1) == '/'){
+      console.log("response")
+      return 1
+    } else if(this.c.charAt(0) == 'q' && this.c.charAt(1) == '/' ){
+      console.log("quotation")
+      return 0
+    } else{
+      console.log("other")
+      return -1
+    }
+
   }
 
   splitBody() {
@@ -37,15 +59,39 @@ export class discourseUnit {
 
   display() {
     let color
-    let bcolor
-    if (this.c.charAt(0) == 'r' && this.c.charAt(1) == '/') {
-      color = this.p5.color(255, 0, 0)
-    } else if (this.c.charAt(0) == 'q' && this.c.charAt(1) == '/') {
-      color = this.p5.color(255)
-    } else {
-      color = this.p5.color(120, 120, 120)
+    let bcolor = this.p5.color(0)
+    let d = 0;
+
+
+    if (this.t == 0) {
+      d = 2
+    } else if (this.t == 1) {
+      d = 3
     }
-    this.displayBound(color, 2)
+    if (this.new == true) {
+      d = 1
+    }
+
+    switch (d) {
+      case 1:
+        color = this.p5.color('#FFCC00')
+        bcolor = this.p5.color(0)
+        this.new = false;
+        break;
+      case 2:
+        color = this.p5.color(255)
+        bcolor = this.p5.color(0)
+        break;
+      case 3:
+        color = this.p5.color(0)
+        bcolor = this.p5.color('#FF0033')
+        break
+      default:
+        color = this.p5.color(120, 120, 120)
+        bcolor = this.p5.color(0)
+    }
+
+    this.displayBound(color, bcolor, 2)
     this.p5.fill(color)
     this.p5.noStroke()
     this.p5.textSize(16)
@@ -54,41 +100,41 @@ export class discourseUnit {
     this.p5.text(this.ref, this.p.x, this.p.y + position + this.bound.z, this.wid, 300)
   }
 
-  displayBound(color, size) {
-    this.p5.fill(0)
+  displayBound(color, bcolor, size) {
     this.p5.stroke(color)
-    this.p5.strokeWeight(size)
-    this.p5.rect(this.bound.x, this.bound.y + position, this.wid, this.bound.z)
-  }
+    this.p5.fill(bcolor)
+  this.p5.strokeWeight(size)
+  this.p5.rect(this.bound.x, this.bound.y + position, this.wid, this.bound.z)
+}
 
-  concernedHighlight() {
-    if (this.isHighlighted == false) {
-      this.p5.stroke('#00ffff')
-      this.p5.strokeWeight(1)
-      this.p5.noFill()
-      let cHx = Array(15).fill().map(() => Math.round(Math.random() * this.wid) + this.bound.x - 50)
-      let cHy = Array(15).fill().map(() => Math.round(Math.random() * this.bound.z) + this.bound.y + position - 50)
-      this.p5.beginShape()
-      for (let i = 0; i < cHx.length; i++) {
-        this.p5.vertex(cHx[i], cHy[i])
-      }
-      this.p5.endShape()
+concernedHighlight() {
+  if (this.isHighlighted == false) {
+    this.p5.stroke('#00ffff')
+    this.p5.strokeWeight(1)
+    this.p5.noFill()
+    let cHx = Array(15).fill().map(() => Math.round(Math.random() * this.wid) + this.bound.x - 50)
+    let cHy = Array(15).fill().map(() => Math.round(Math.random() * this.bound.z) + this.bound.y + position - 50)
+    this.p5.beginShape()
+    for (let i = 0; i < cHx.length; i++) {
+      this.p5.vertex(cHx[i], cHy[i])
     }
-    this.isHighlighted = true
-
+    this.p5.endShape()
   }
+  this.isHighlighted = true
 
-  isInsideScreen() {
-    return this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
-  }
+}
 
-  isOfConcern() {
-    let concern = this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
-    if (!concern) {
-      this.isHighlighted = false
-    }
-    return this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
+isInsideScreen() {
+  return this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
+}
+
+isOfConcern() {
+  let concern = this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
+  if (!concern) {
+    this.isHighlighted = false
   }
+  return this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
+}
 }
 
 export class discourseSet {
@@ -112,12 +158,12 @@ export class discourseSet {
       for (let those in connections) {
         this.p5.noFill()
         this.p5.stroke('#ffA908')
-        if(document.getElementById('rp-b').classList.contains('current')){
+        if (document.getElementById('rp-b').classList.contains('current')) {
           this.p5.strokeWeight(3)
         } else {
-            this.p5.strokeWeight(.8)
+          this.p5.strokeWeight(.8)
         }
-        this.p5.line(theRelated[each].p.x+200, theRelated[each].centroid.y + position, connections[those].p.x+200,connections[those].centroid.y+position)
+        this.p5.line(theRelated[each].p.x + 200, theRelated[each].centroid.y + position, connections[those].p.x + 200, connections[those].centroid.y + position)
       }
     }
 
@@ -144,8 +190,8 @@ export class discourseSet {
         if (this.pendingRelation[0].u != theConcerned[each].u) {
           this.pendingRelation[0].relatesTo.push(theConcerned[each].u)
           let data = {
-            u:this.pendingRelation[0].u,
-            r:theConcerned[each].u
+            u: this.pendingRelation[0].u,
+            r: theConcerned[each].u
           }
           socket.emit('relation', data)
         }
@@ -164,7 +210,7 @@ export async function getBase(url) {
     const response = await fetch(url)
     const body = await response.json()
     loadDiscourseUnitsToArray(body)
-    discourses.vis();
+    discourses.vis()
   } catch (error) {
     console.log(error)
     console.log("failure at database retrieval - client")
@@ -179,33 +225,3 @@ function loadDiscourseUnitsToArray(units) {
     discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r)
   }
 }
-
-
-export const content = new p5((j) => {
-
-  let tFont;
-
-  j.preload = function() {
-    tFont = j.loadFont("f7f26928c6b1edc770c616475459ecc8.otf");
-  }
-
-  j.setup = () => {
-    j.createCanvas(j.displayWidth, j.displayHeight)
-    j.textFont(tFont)
-  }
-
-  j.refresh = function() {
-    j.clear();
-    discourses.vis()
-  }
-
-  j.mouseWheel = function(event) {
-    j.clear()
-    position -= event.delta / 5
-    let temp = document.getElementsByClassName('pend')
-    while (temp[0]) {
-      temp[0].parentNode.removeChild(temp[0])
-    }
-    j.refresh()
-  }
-}, 'content')
