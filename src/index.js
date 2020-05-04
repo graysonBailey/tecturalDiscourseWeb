@@ -3,7 +3,6 @@ import './style.css';
 import p5 from 'p5/lib/p5.min.js';
 import io from 'socket.io-client';
 import $ from 'jQuery'
-import dUnit from './dUnit.js';
 import {
   back,
   content
@@ -165,6 +164,17 @@ export const overlay = () => {
       }
     }
 
+    p.escapeUnit = function(){
+      let temp = document.getElementById('tempGeist')
+      let tempButton = document.getElementById('tempGeistButton')
+        let tempEscButton = document.getElementById('escapeGeistButton')
+      if (temp != null) {
+        temp.remove()
+        tempButton.remove()
+        tempEscButton.remove()
+      }
+    }
+
     p.keyPressed = function() {
 
       if (p.keyCode === 32) {
@@ -172,20 +182,17 @@ export const overlay = () => {
           if (document.getElementsByClassName('geist').length < 1) {
             let input = p.createElement("textarea").class('geist')
             let inputButton = p.createButton('submit').class('geistButton')
-            inputButton.position(p.mouseX, p.mouseY + 310)
+            let escButton = p.createButton('X').class('geistButton')
+            inputButton.position(p.mouseX, p.mouseY - 20)
+            escButton.position(p.mouseX+380,p.mouseY-20)
             input.position(p.mouseX, p.mouseY)
             input.id('tempGeist')
             input.attribute('placeholder', '. r/ ____ provide for response \r\n. q/ ____ provide for quotation \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n \r\n. // ____ provide before citation')
             inputButton.id('tempGeistButton')
+            escButton.id('escapeGeistButton')
             inputButton.mousePressed(p.submitUnit)
+            escButton.mousePressed(p.escapeUnit)
           }
-        }
-      } else if (p.keyCode == p.ESCAPE) {
-        let temp = document.getElementById('tempGeist')
-        let tempButton = document.getElementById('tempGeistButton')
-        if (temp != null) {
-          temp.remove()
-          tempButton.remove()
         }
       }
     }
