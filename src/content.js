@@ -134,11 +134,17 @@ isOfConcern() {
 }
 
 export class discourseSet {
-  constructor(p5) {
+  constructor(p5,name) {
     this.p5 = p5
     this.set = []
     this.pendingRelation = []
+    this.db=name
   }
+
+  name(str){
+    this.db = str
+  }
+
 
   addUnit(c, p, t, u, r) {
     this.set.push(new discourseUnit(this.p5, c, p, t, u, r))
@@ -187,7 +193,8 @@ export class discourseSet {
           this.pendingRelation[0].relatesTo.push(theConcerned[each].u)
           let data = {
             u: this.pendingRelation[0].u,
-            r: theConcerned[each].u
+            r: theConcerned[each].u,
+            db:discourses.db
           }
           socket.emit('relation', data)
         }
@@ -201,11 +208,11 @@ export class discourseSet {
   }
 }
 
-export async function getBase(url) {
+export async function getBase(url,name) {
   try {
     const response = await fetch(url)
     const body = await response.json()
-    loadDiscourseUnitsToArray(body)
+    loadDiscourseUnitsToArray(body,name)
     discourses.vis()
   } catch (error) {
     console.log(error)
@@ -214,8 +221,8 @@ export async function getBase(url) {
 
 }
 
-function loadDiscourseUnitsToArray(units) {
-  discourses = new discourseSet(content)
+function loadDiscourseUnitsToArray(units,name) {
+  discourses = new discourseSet(content,name)
   for (let each in units) {
     let unit = units[each]
     discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r)

@@ -1,5 +1,10 @@
 import p5 from 'p5/lib/p5.min.js';
-import{discourses} from './content.js'
+import {
+  discourses
+} from './content.js'
+import {
+  mode
+} from './index.js'
 
 export const content = new p5((j) => {
 
@@ -31,22 +36,36 @@ export const content = new p5((j) => {
 }, 'content')
 
 export const back = new p5((d) => {
-    d.setup = () => {
-      d.createCanvas(d.windowWidth, d.windowHeight+50)
-      d.refreshed()
+  d.setup = () => {
+    d.createCanvas(d.windowWidth, d.windowHeight + 50)
+    d.refreshed()
+  }
+
+  d.refreshed = function(m) {
+    let back
+    switch (m) {
+      case 1:
+        back = d.color(60)
+        break;
+      case 2:
+        back = d.color(47, 230, 240)
+        break;
+      default:
+        back = d.color(0)
     }
 
-    d.refreshed = function() {
-      d.background(0)
-      for (let i = 150; i < d.windowWidth-100; i += 25) {
-        d.stroke(205)
-        d.strokeWeight(.5);
-        d.line(i, 0, i+25, d.windowHeight+50)
-      }
-    }
 
-    d.windowResized = function() {
-      d.resizeCanvas(d.windowWidth, d.windowHeight)
-      d.refreshed()
+
+    d.background(back)
+    for (let i = 150; i < d.windowWidth - 100; i += 25) {
+      d.stroke(205)
+      d.strokeWeight(.5);
+      d.line(i, 0, i + 25, d.windowHeight + 50)
     }
-  }, 'back')
+  }
+
+  d.windowResized = function() {
+    d.resizeCanvas(d.windowWidth, d.windowHeight)
+    d.refreshed()
+  }
+}, 'back')

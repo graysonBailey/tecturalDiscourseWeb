@@ -14,13 +14,20 @@ var server = app.listen(3000, '0.0.0.0');
 var io = socket(server);
 console.log("My socket server is running");
 
-
-const database = new Datastore({
-  filename: 'allgemeineDiscourses.db',
+const architectural = new Datastore({
+  filename: 'architectural.db',
   autoload: true
 });
-database.remove({ _id: 'aLHHrfzdHNgarb8T' }, {}, function (err, numRemoved) {
-  // numRemoved = 1
+
+const anarchic = new Datastore({
+  filename: 'anarchic.db',
+  autoload: true
+});
+
+
+const verbunden = new Datastore({
+  filename: 'allgemeineDiscourses.db',
+  autoload: true
 });
 
 
@@ -41,8 +48,30 @@ app.get('/howdy', (request, response) => {
   ])
 })
 
-app.get('/database', (request, response) => {
-  database.find({}, (err, docs) => {
+app.get('/architectural', (request, response) => {
+  architectural.find({}, (err, docs) => {
+    if (err) {
+      console.log("error in retrieval find process...")
+      response.end();
+      return;
+    }
+    response.json(docs)
+  })
+})
+
+app.get('/anarchic', (request, response) => {
+  anarchic.find({}, (err, docs) => {
+    if (err) {
+      console.log("error in retrieval find process...")
+      response.end();
+      return;
+    }
+    response.json(docs)
+  })
+})
+
+app.get('/verbunden', (request, response) => {
+  verbunden.find({}, (err, docs) => {
     if (err) {
       console.log("error in retrieval find process...")
       response.end();
@@ -65,18 +94,32 @@ function newConnection(socket) {
   socket.on('unit', data => {
     console.log(data)
     socket.broadcast.emit('unit', data)
-    database.insert(data);
-
+    if(data.db == "ver"){
+      delete data.db
+      verbunden.insert(data);
+    } else if (data.db == "arch"){
+      delete data.db
+      architectural.insert(data);
+    } else if (data.db == "an"){
+      delete data.db
+      anarchic.insert(data);
+    }
   })
 
   socket.on('relation', data => {
     console.log("got relation")
     console.log(data)
 
-    database.update({ u: data.u }, { $push: { r: data.r } }, {}, function () {
-  // Now the fruits array is ['apple', 'orange', 'pear', 'banana']
-})
-
+    if(data.db == "ver"){
+      delete data.db
+      verbunden.update({ u: data.u }, { $push: { r: data.r } }, {}, function (){})
+    } else if (data.db == "arch"){
+      delete data.db
+      architectural.update({ u: data.u }, { $push: { r: data.r } }, {}, function (){})
+    } else if (data.db == "an"){
+      delete data.db
+      anarchic.update({ u: data.u }, { $push: { r: data.r } }, {}, function (){})
+    }
   })
 
 

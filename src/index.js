@@ -7,15 +7,17 @@ import {
   back,
   content
 } from './threeCanvases.js';
+
+import{discursiveOverlay} from './present.js'
 import {
   discourses,
-  getBase
+  discourseSet
 } from './content.js';
 import switchModeInstructions from './modeSwitch.js'
 const path = require('path');
 export const socket = io();
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
-let mode = 0
+export let mode = 0
 export let position = 0;
 
 async function postUNIT(url, data) {
@@ -38,7 +40,9 @@ async function postUNIT(url, data) {
 
 window.onload = function() {
 
-document.getElementById('overlay').addEventListener("wheel", event => reposition(event));
+  document.getElementById('overlay').addEventListener("wheel", event => reposition(event));
+
+
 
   document.getElementById('about-this-website').onclick = () => {
     document.getElementById('about-window-overlay').classList.remove('disabled');
@@ -51,34 +55,53 @@ document.getElementById('overlay').addEventListener("wheel", event => reposition
   }
 
   document.getElementById('rp-b').onclick = () => {
-    console.log("RELATIONS")
     document.getElementById('gp-b').classList.remove('current');
-    document.getElementById('sp-b').classList.remove('current');
+    //document.getElementById('sp-b').classList.remove('current');
     document.getElementById('rp-b').classList.add('current');
-    mode = 2;
-    switchModeInstructions(mode)
+    //mode = 2;
+    switchModeInstructions(2)
+  //  back.refreshed()
+    discourses.vis()
   }
 
   document.getElementById('gp-b').onclick = () => {
     document.getElementById('rp-b').classList.remove('current');
-    document.getElementById('sp-b').classList.remove('current');
+    //document.getElementById('sp-b').classList.remove('current');
     document.getElementById('gp-b').classList.add('current');
-    mode = 1
-    switchModeInstructions(mode)
+  //mode = 1
+    switchModeInstructions(1)
+
+    discourses.vis()
   }
 
-  document.getElementById('sp-b').onclick = () => {
+  document.getElementById('discourseLoad').onclick = () => {
+    let presenter = new discursiveOverlay(overlay)
+    presenter.giveChoices()
+  }
+
+  document.getElementById('switchLoad').onclick = () => {
     document.getElementById('rp-b').classList.remove('current');
     document.getElementById('gp-b').classList.remove('current');
-    document.getElementById('sp-b').classList.add('current');
-    mode = 0
-    switchModeInstructions(mode)
+    document.getElementById('gp-b').classList.add('away');
+    document.getElementById('rp-b').classList.add('away');
+    content.clear()
+    switchModeInstructions(0)
+    let presenter = new discursiveOverlay(overlay)
+    overlay.clear()
+    presenter.giveChoices()
+
   }
-  getBase('/database').then(body => console.log(body))
+
+  // document.getElementById('sp-b').onclick = () => {
+  //   document.getElementById('rp-b').classList.remove('current');
+  //   document.getElementById('gp-b').classList.remove('current');
+  //   document.getElementById('sp-b').classList.add('current');
+  //   mode = 0
+  //   switchModeInstructions(mode)
+  // }
 }
 
-export const overlay = () => {
-  new p5((p) => {
+export const overlay = new p5((p) => {
     let tFont;
     let curs;
     let pointers = [p.createVector(0, 0), p.createVector(0, 0)]
@@ -99,8 +122,10 @@ export const overlay = () => {
     }
 
     p.logUnit = function(data) {
+      if (data.db == discourses.db){
       discourses.addUnit(data.c, data.p, data.t, data.u,data.r)
       discourses.vis()
+    }
     }
 
     p.newDrawing = function(data) {
@@ -121,23 +146,20 @@ export const overlay = () => {
         socket.emit('mouse', data);
         p.noStroke();
         p.fill(47, 230, 240)
-        p.ellipse(p.mouseX, p.mouseY, 20, 20);
+        p.ellipse(p.mouseX, p.mouseY, 10, 10);
       }
     }
 
     p.mouseClicked = function() {
-      if (mode == 2) {
+      if (document.getElementById('rp-b').classList.contains('current')) {
         discourses.concern()
       }
-    }
-
-    p.mouseMoved = function() {
-      p.setPositions()
     }
 
     p.submitUnit = function() {
       let temp = document.getElementById('tempGeist')
       let tempButton = document.getElementById('tempGeistButton')
+      let escButton = document.getElementById('escapeGeistButton')
       if (temp.value != "") {
         let ttop = temp.offsetTop
         let tleft = temp.offsetLeft
@@ -150,10 +172,12 @@ export const overlay = () => {
           },
           t: 0,
           u: discourses.set.length,
-          r: []
+          r: [],
+          db:discourses.db
         }
         temp.remove()
         tempButton.remove()
+        escButton.remove()
         discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u, [])
         socket.emit('unit', tDisc);
         discourses.vis()
@@ -165,7 +189,7 @@ export const overlay = () => {
     p.escapeUnit = function(){
       let temp = document.getElementById('tempGeist')
       let tempButton = document.getElementById('tempGeistButton')
-        let tempEscButton = document.getElementById('escapeGeistButton')
+      let tempEscButton = document.getElementById('escapeGeistButton')
       if (temp != null) {
         temp.remove()
         tempButton.remove()
@@ -176,7 +200,7 @@ export const overlay = () => {
     p.keyPressed = function() {
 
       if (p.keyCode === 32) {
-        if (mode == 1) {
+        if (document.getElementById('gp-b').classList.contains('current')) {
           if (document.getElementsByClassName('geist').length < 1) {
             let input = p.createElement("textarea").class('geist')
             let inputButton = p.createButton('submit').class('geistButton')
@@ -196,19 +220,13 @@ export const overlay = () => {
     }
 
 
-    p.setPositions = function() {
-      document.getElementById("x-coord").innerHTML = p.mouseX
-      document.getElementById("y-coord").innerHTML = p.mouseY
-    }
-
-    p.mousePressed = function() {
+      p.mousePressed = function() {
       if (p.mouseX > 0 && p.mouseX < 100 && p.mouseY > 0 && p.mouseY < 100) {
         let fs = p.fullscreen();
         p.fullscreen(!fs);
       }
     }
   }, 'overlay')
-}
 
 let checkInput = function() {
   let el = document.getElementById("tempGeist")
@@ -225,13 +243,12 @@ let checkInput = function() {
   }
 }
 
-overlay()
-
 let reposition = function(event){
   content.clear()
   const delta = Math.sign(event.deltaY);
   position = position - (delta*30)
   discourses.vis()
+  document.getElementById("vertPos").innerHTML = position
 }
 
 $(document).on('keydown', '.geist', function() {

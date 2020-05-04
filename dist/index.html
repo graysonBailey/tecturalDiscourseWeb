@@ -30,13 +30,16 @@
 
 
   <div class="left-cascade noselect" id="leftCascade">
-    <div  id="sp-b" class="lc-screen lc-con button current">
-      <span>{. _ screen plane _ .}</span>
+    <div  id="discourseLoad" class="lc-screen lc-con button current">
+      <span>() =>  loadDiscourses()</span>
     </div>
-    <div  id="gp-b" class="lc-top lc-con button">
+    <div  id="switchLoad" class="lc-screen lc-con button away darkhorse">
+      <span>() =>  switchLoad()</span>
+    </div>
+    <div  id="gp-b" class="lc-top lc-con button away">
       <span>{. _ geist plane _ .}</span>
     </div>
-    <div id = "rp-b"class="lc-mid lc-con button">
+    <div id = "rp-b"class="lc-mid lc-con button away">
       <span >< _ relation plane _ .></span>
     </div>
     <div  id="appendix" class="lc-bottom">
@@ -62,8 +65,8 @@
       <span>object discour.se</span>
     </div>
     <div class="tc-con">
-      <span>x:</span><span id="x-coord">0,</span>
-      <span>y:</span><span id="y-coord">0</span>
+      <span>vertical position:</span><span id="vertPos">0</span>
+
     </div>
     <div class="noselect tc-con">
       <span id="about-this-website" class="button">what</span>
