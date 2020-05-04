@@ -31,16 +31,12 @@ export class discourseUnit {
 
   checkType(){
     if(this.c.charAt(0) == 'r' && this.c.charAt(1) == '/'){
-      console.log("response")
       return 1
     } else if(this.c.charAt(0) == 'q' && this.c.charAt(1) == '/' ){
-      console.log("quotation")
       return 0
     } else{
-      console.log("other")
       return -1
     }
-
   }
 
   splitBody() {

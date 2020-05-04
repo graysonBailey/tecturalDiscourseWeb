@@ -9,8 +9,6 @@ import {
 } from './threeCanvases.js';
 import {
   discourses,
-  discourseUnit,
-  discourseSet,
   getBase
 } from './content.js';
 import switchModeInstructions from './modeSwitch.js'
