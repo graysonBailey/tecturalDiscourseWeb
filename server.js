@@ -3,8 +3,6 @@ const Datastore = require('nedb')
 const socket = require('socket.io')
 const fetch = require('node-fetch')
 
-
-
 var app = express();
 app.use(express.static('dist'));
 app.use(express.json({
@@ -19,6 +17,11 @@ const architectural = new Datastore({
   autoload: true
 });
 
+const medial = new Datastore({
+  filename: 'medial.db',
+  autoload: true
+});
+
 const anarchic = new Datastore({
   filename: 'anarchic.db',
   autoload: true
@@ -26,7 +29,7 @@ const anarchic = new Datastore({
 
 
 const verbunden = new Datastore({
-  filename: 'allgemeineDiscourses.db',
+  filename: 'verbunden.db',
   autoload: true
 });
 
@@ -46,6 +49,17 @@ app.get('/howdy', (request, response) => {
       place: "kiddo"
     }
   ])
+})
+
+app.get('/medial', (request, response) => {
+  architectural.find({}, (err, docs) => {
+    if (err) {
+      console.log("error in retrieval find process...")
+      response.end();
+      return;
+    }
+    response.json(docs)
+  })
 })
 
 app.get('/architectural', (request, response) => {
@@ -88,11 +102,8 @@ app.post('/database')
 io.on('connection', newConnection);
 
 function newConnection(socket) {
-  console.log('new connection: ' + socket.id);
-
 
   socket.on('unit', data => {
-    console.log(data)
     socket.broadcast.emit('unit', data)
     if(data.db == "ver"){
       delete data.db
@@ -107,9 +118,6 @@ function newConnection(socket) {
   })
 
   socket.on('relation', data => {
-    console.log("got relation")
-    console.log(data)
-
     if(data.db == "ver"){
       delete data.db
       verbunden.update({ u: data.u }, { $push: { r: data.r } }, {}, function (){})
@@ -121,7 +129,6 @@ function newConnection(socket) {
       anarchic.update({ u: data.u }, { $push: { r: data.r } }, {}, function (){})
     }
   })
-
 
   socket.on('mouse', data => {
     socket.broadcast.emit('mouse', data)

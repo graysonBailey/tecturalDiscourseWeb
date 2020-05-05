@@ -126,8 +126,11 @@ user-select: none;
   z-index:1;
 }
 
-.lc-screen {
+.lc-load {
   top: 15vh;
+}
+.lc-low {
+  top: 45vh;
 }
 
 .lc-top {

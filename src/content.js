@@ -13,7 +13,7 @@ export let discourses = [];
 
 
 export class discourseUnit {
-  constructor(p5, c, p, t, u, r) {
+  constructor(p5, c, p, t, u, r, d) {
     this.p5 = p5
     this.c = c
     this.p = p
@@ -27,14 +27,15 @@ export class discourseUnit {
     this.new = true;
     this.isHighlighted = false
     this.relatesTo = r
-  }
+    this.d = d
+    }
 
-  checkType(){
-    if(this.c.charAt(0) == 'r' && this.c.charAt(1) == '/'){
+  checkType() {
+    if (this.c.charAt(0) == 'r' && this.c.charAt(1) == '/') {
       return 1
-    } else if(this.c.charAt(0) == 'q' && this.c.charAt(1) == '/' ){
+    } else if (this.c.charAt(0) == 'q' && this.c.charAt(1) == '/') {
       return 0
-    } else{
+    } else {
       return -1
     }
   }
@@ -47,9 +48,33 @@ export class discourseUnit {
     return parts[0]
   }
 
+  buildLines() {
+
+    let rem = 0;
+    let lrem = 0;
+    let seg = []
+
+    for (let i = 0; i < this.c.length; i++) {
+      let cha = this.c.charAt(i);
+
+      let ttemp = this.c.substring(lrem, i)
+
+      if (cha == ' ') {
+        rem = i
+      }
+      if (this.p5.textWidth(ttemp) > 350) {
+        seg.push(this.c.substring(lrem, rem))
+        lrem = rem
+      }
+    }
+    return seg.length + 2
+  }
+
+
+
   constructBound() {
-    let lines = Math.round(this.c.length / 70)
-    let tbound = this.p5.createVector(this.p.x - 5, this.p.y - 5, (lines + 1) * 18)
+    let lines = this.buildLines()
+    let tbound = this.p5.createVector(this.p.x - 5, this.p.y - 5, (lines * 18) + 10)
     return tbound
   }
 
@@ -93,61 +118,64 @@ export class discourseUnit {
     this.p5.textSize(16)
     this.p5.text(this.body, this.p.x, this.p.y + position, this.wid, this.bound.z)
     this.p5.textSize(14)
+    this.p5.fill(255)
     this.p5.text(this.ref, this.p.x, this.p.y + position + this.bound.z, this.wid, 300)
+    this.p5.textSize(12)
+    this.p5.text(this.d,this.p.x-5,this.p.y-8+position)
   }
 
   displayBound(color, bcolor, size) {
     this.p5.stroke(color)
     this.p5.fill(bcolor)
-  this.p5.strokeWeight(size)
-  this.p5.rect(this.bound.x, this.bound.y + position, this.wid, this.bound.z)
-}
+    this.p5.strokeWeight(size)
+    this.p5.rect(this.bound.x, this.bound.y + position, this.wid, this.bound.z)
+  }
 
-concernedHighlight() {
-  if (this.isHighlighted == false) {
-    this.p5.stroke('#00ffff')
-    this.p5.strokeWeight(1)
-    this.p5.noFill()
-    let cHx = Array(15).fill().map(() => Math.round(Math.random() * this.wid) + this.bound.x - 50)
-    let cHy = Array(15).fill().map(() => Math.round(Math.random() * this.bound.z) + this.bound.y + position - 50)
-    this.p5.beginShape()
-    for (let i = 0; i < cHx.length; i++) {
-      this.p5.vertex(cHx[i], cHy[i])
+  concernedHighlight() {
+    if (this.isHighlighted == false) {
+      this.p5.stroke('#FFFF33')
+      this.p5.strokeWeight(1)
+      this.p5.noFill()
+      let cHx = Array(15).fill().map(() => Math.round(Math.random() * this.wid) + this.bound.x - 50)
+      let cHy = Array(15).fill().map(() => Math.round(Math.random() * this.bound.z) + this.bound.y + position - 30)
+      this.p5.beginShape()
+      for (let i = 0; i < cHx.length; i++) {
+        this.p5.vertex(cHx[i], cHy[i])
+      }
+      this.p5.endShape()
     }
-    this.p5.endShape()
+    this.isHighlighted = true
+
   }
-  this.isHighlighted = true
 
-}
-
-isInsideScreen() {
-  return this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
-}
-
-isOfConcern() {
-  let concern = this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
-  if (!concern) {
-    this.isHighlighted = false
+  isInsideScreen() {
+    return this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
   }
-  return this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
-}
+
+  isOfConcern() {
+    let concern = this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
+    if (!concern) {
+      this.isHighlighted = false
+    }
+    return this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
+  }
 }
 
 export class discourseSet {
-  constructor(p5,name) {
+  constructor(p5, name) {
     this.p5 = p5
     this.set = []
     this.pendingRelation = []
-    this.db=name
+    this.db = name
   }
 
-  name(str){
+  name(str) {
     this.db = str
   }
 
 
-  addUnit(c, p, t, u, r) {
-    this.set.push(new discourseUnit(this.p5, c, p, t, u, r))
+  addUnit(c, p, t, u, r,d) {
+    this.set.push(new discourseUnit(this.p5, c, p, t, u, r,d))
   }
 
   groupRelations() {
@@ -194,7 +222,7 @@ export class discourseSet {
           let data = {
             u: this.pendingRelation[0].u,
             r: theConcerned[each].u,
-            db:discourses.db
+            db: discourses.db
           }
           socket.emit('relation', data)
         }
@@ -208,11 +236,11 @@ export class discourseSet {
   }
 }
 
-export async function getBase(url,name) {
+export async function getBase(url, name) {
   try {
     const response = await fetch(url)
     const body = await response.json()
-    loadDiscourseUnitsToArray(body,name)
+    loadDiscourseUnitsToArray(body, name)
     discourses.vis()
   } catch (error) {
     console.log(error)
@@ -221,10 +249,10 @@ export async function getBase(url,name) {
 
 }
 
-function loadDiscourseUnitsToArray(units,name) {
-  discourses = new discourseSet(content,name)
+function loadDiscourseUnitsToArray(units, name) {
+  discourses = new discourseSet(content, name)
   for (let each in units) {
     let unit = units[each]
-    discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r)
+    discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r,unit.d)
   }
 }

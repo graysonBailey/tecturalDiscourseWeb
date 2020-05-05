@@ -23,16 +23,6 @@ export const content = new p5((j) => {
     j.clear();
     discourses.vis()
   }
-
-  j.mouseWheel = function(event) {
-    // j.clear()
-    // position -= event.delta / 5
-    // let temp = document.getElementsByClassName('pend')
-    // while (temp[0]) {
-    //   temp[0].parentNode.removeChild(temp[0])
-    // }
-    // j.refresh()
-  }
 }, 'content')
 
 export const back = new p5((d) => {
@@ -43,23 +33,24 @@ export const back = new p5((d) => {
 
   d.refreshed = function(m) {
     let back
+    let lin
     switch (m) {
       case 1:
-        back = d.color(60)
+        back = d.color(20)
+        lin = d.color(255)
         break;
       case 2:
-        back = d.color(47, 230, 240)
+        back = d.color(47,230,240)
+        lin = d.color(0)
         break;
       default:
         back = d.color(0)
+        lin = d.color(255)
     }
-
-
-
     d.background(back)
     for (let i = 150; i < d.windowWidth - 100; i += 25) {
-      d.stroke(205)
-      d.strokeWeight(.5);
+      d.stroke(lin)
+      d.strokeWeight(.5)
       d.line(i, 0, i + 25, d.windowHeight + 50)
     }
   }

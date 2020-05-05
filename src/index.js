@@ -27,7 +27,7 @@ async function postUNIT(url, data) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(data)
-  });
+  })
   return response.json()
 }
 
@@ -42,8 +42,6 @@ window.onload = function() {
 
   document.getElementById('overlay').addEventListener("wheel", event => reposition(event));
 
-
-
   document.getElementById('about-this-website').onclick = () => {
     document.getElementById('about-window-overlay').classList.remove('disabled');
     console.log("pressed it")
@@ -53,52 +51,33 @@ window.onload = function() {
     document.getElementById('about-window-overlay').classList.add('disabled');
     console.log("pressed it")
   }
-
   document.getElementById('rp-b').onclick = () => {
     document.getElementById('gp-b').classList.remove('current');
-    //document.getElementById('sp-b').classList.remove('current');
     document.getElementById('rp-b').classList.add('current');
-    //mode = 2;
     switchModeInstructions(2)
-  //  back.refreshed()
     discourses.vis()
   }
-
   document.getElementById('gp-b').onclick = () => {
     document.getElementById('rp-b').classList.remove('current');
-    //document.getElementById('sp-b').classList.remove('current');
     document.getElementById('gp-b').classList.add('current');
-  //mode = 1
     switchModeInstructions(1)
-
     discourses.vis()
   }
-
   document.getElementById('discourseLoad').onclick = () => {
     let presenter = new discursiveOverlay(overlay)
     presenter.giveChoices()
   }
-
   document.getElementById('switchLoad').onclick = () => {
     document.getElementById('rp-b').classList.remove('current');
     document.getElementById('gp-b').classList.remove('current');
-    document.getElementById('gp-b').classList.add('away');
-    document.getElementById('rp-b').classList.add('away');
+    document.getElementById('gp-b').classList.toggle('away');
+    document.getElementById('rp-b').classList.toggle('away');
     content.clear()
     switchModeInstructions(0)
     let presenter = new discursiveOverlay(overlay)
     overlay.clear()
     presenter.giveChoices()
-
   }
-
-  // document.getElementById('sp-b').onclick = () => {
-  //   document.getElementById('rp-b').classList.remove('current');
-  //   document.getElementById('gp-b').classList.remove('current');
-  //   document.getElementById('sp-b').classList.add('current');
-  //   mode = 0
-  //   switchModeInstructions(mode)
-  // }
 }
 
 export const overlay = new p5((p) => {
@@ -123,9 +102,9 @@ export const overlay = new p5((p) => {
 
     p.logUnit = function(data) {
       if (data.db == discourses.db){
-      discourses.addUnit(data.c, data.p, data.t, data.u,data.r)
+      discourses.addUnit(data.c, data.p, data.t, data.u,data.r,data.d)
       discourses.vis()
-    }
+      }
     }
 
     p.newDrawing = function(data) {
@@ -136,7 +115,6 @@ export const overlay = new p5((p) => {
     }
 
     p.mouseDragged = function() {
-      if (mode == 0) {
         var tex = "loser";
         var data = {
           x: p.mouseX,
@@ -147,7 +125,6 @@ export const overlay = new p5((p) => {
         p.noStroke();
         p.fill(47, 230, 240)
         p.ellipse(p.mouseX, p.mouseY, 10, 10);
-      }
     }
 
     p.mouseClicked = function() {
@@ -173,12 +150,14 @@ export const overlay = new p5((p) => {
           t: 0,
           u: discourses.set.length,
           r: [],
+          d: [p.year(),p.month(),p.day(),p.hour(),p.minute(),p.second()],
           db:discourses.db
         }
+        console.log(tDisc.d)
         temp.remove()
         tempButton.remove()
         escButton.remove()
-        discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u, [])
+        discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u, [],tDisc.d)
         socket.emit('unit', tDisc);
         discourses.vis()
       } else {
@@ -198,7 +177,6 @@ export const overlay = new p5((p) => {
     }
 
     p.keyPressed = function() {
-
       if (p.keyCode === 32) {
         if (document.getElementById('gp-b').classList.contains('current')) {
           if (document.getElementsByClassName('geist').length < 1) {

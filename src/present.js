@@ -1,5 +1,7 @@
 import p5 from 'p5/lib/p5.min.js';
-import {overlay} from './index.js'
+import {
+  overlay
+} from './index.js'
 import {
   discourses,
   getBase
@@ -11,56 +13,74 @@ export class discursiveOverlay {
     this.currentDiscourse
   }
 
-  giveChoices(){
-    let architecturalButton = this.p5.createButton('(database)_the_architectural.db').class('spatialChoice').id('archChoice')
-    let anarchicButton = this.p5.createButton('(database)_the_anarchic.db').class('spatialChoice').id('anarchChoice')
-    let verbundenButton = this.p5.createButton('(intertwine)_verbunden.dbs').class('spatialChoice').id('verbundChoice')
-    architecturalButton.position(210,160)
-    anarchicButton.position(210,180)
-    verbundenButton.position(210,200)
+  giveChoices() {
+    if (document.getElementById('archChoice') == null) {
+      let architecturalButton = this.p5.createButton('(database)_the_architectural.db').class('spatialChoice').id('archChoice')
+      let anarchicButton = this.p5.createButton('(database)_the_anarchic.db').class('spatialChoice').id('anarchChoice')
+      let medialButton = this.p5.createButton('(database)_the_medial.db').class('spatialChoice').id('medialChoice')
+      let verbundenButton = this.p5.createButton('(intertwine)_verbunden.dbs').class('spatialChoice').id('verbundChoice')
 
-    architecturalButton.mousePressed(this.loadArchitectural)
-    anarchicButton.mousePressed(this.loadAnarchic)
-    verbundenButton.mousePressed(this.loadVerbunden)
+
+      architecturalButton.position(210, 160)
+      anarchicButton.position(210, 180)
+      medialButton.position(210, 200)
+      verbundenButton.position(210, 220)
+
+      architecturalButton.mousePressed(this.loadArchitectural)
+      anarchicButton.mousePressed(this.loadAnarchic)
+      verbundenButton.mousePressed(this.loadVerbunden)
+      medialButton.mousePressed(this.loadMedial)
+    }
   }
 
-  removeChoices(){
-
-  }
-
-
-  loadArchitectural(){
-    getBase('/architectural',"arch").then(body => console.log(body))
+  loadArchitectural() {
+    getBase('/architectural', "arch").then(body => console.log(body))
     document.getElementById('rp-b').classList.remove('away')
     document.getElementById('gp-b').classList.remove('away')
     document.getElementById('archChoice').remove()
     document.getElementById('anarchChoice').remove()
     document.getElementById('verbundChoice').remove()
+    document.getElementById('medialChoice').remove()
     document.getElementById('discourseLoad').classList.add('away')
     document.getElementById('switchLoad').classList.remove('away')
     console.log(discourses.db)
     overlay.clear()
   }
 
-  loadAnarchic(){
-    getBase('/anarchic',"an").then(body => console.log(body))
+  loadAnarchic() {
+    getBase('/anarchic', "an").then(body => console.log(body))
     document.getElementById('rp-b').classList.remove('away')
     document.getElementById('gp-b').classList.remove('away')
     document.getElementById('archChoice').remove()
     document.getElementById('anarchChoice').remove()
     document.getElementById('verbundChoice').remove()
+    document.getElementById('medialChoice').remove()
     document.getElementById('discourseLoad').classList.add('away')
     document.getElementById('switchLoad').classList.remove('away')
     overlay.clear()
   }
 
-  loadVerbunden(){
-    getBase('/verbunden',"ver").then(body => console.log(body))
+  loadVerbunden() {
+    getBase('/verbunden', "ver").then(body => console.log(body))
     document.getElementById('rp-b').classList.remove('away')
     document.getElementById('gp-b').classList.remove('away')
     document.getElementById('archChoice').remove()
     document.getElementById('anarchChoice').remove()
     document.getElementById('verbundChoice').remove()
+    document.getElementById('medialChoice').remove()
+    document.getElementById('discourseLoad').classList.add('away')
+    document.getElementById('switchLoad').classList.remove('away')
+    overlay.clear()
+  }
+
+  loadMedial() {
+    getBase('/medial', "med").then(body => console.log(body))
+    document.getElementById('rp-b').classList.remove('away')
+    document.getElementById('gp-b').classList.remove('away')
+    document.getElementById('archChoice').remove()
+    document.getElementById('anarchChoice').remove()
+    document.getElementById('verbundChoice').remove()
+    document.getElementById('medialChoice').remove()
     document.getElementById('discourseLoad').classList.add('away')
     document.getElementById('switchLoad').classList.remove('away')
     overlay.clear()
