@@ -7,11 +7,13 @@ import {
   back,
   content
 } from './threeCanvases.js';
-
-import{discursiveOverlay} from './present.js'
+import{
+  discursiveOverlay
+} from './present.js'
 import {
   discourses,
-  discourseSet
+  discourseSet,
+  getBase
 } from './content.js';
 import switchModeInstructions from './modeSwitch.js'
 const path = require('path');
@@ -40,6 +42,8 @@ async function postUNIT(url, data) {
 
 window.onload = function() {
 
+
+
   document.getElementById('overlay').addEventListener("wheel", event => reposition(event));
 
   document.getElementById('about-this-website').onclick = () => {
@@ -64,8 +68,10 @@ window.onload = function() {
     discourses.vis()
   }
   document.getElementById('discourseLoad').onclick = () => {
+
     let presenter = new discursiveOverlay(overlay)
     presenter.giveChoices()
+
   }
   document.getElementById('switchLoad').onclick = () => {
     document.getElementById('rp-b').classList.remove('current');
@@ -78,6 +84,9 @@ window.onload = function() {
     overlay.clear()
     presenter.giveChoices()
   }
+
+getBase('/entire').then(body => console.log(body))
+
 }
 
 export const overlay = new p5((p) => {
@@ -102,7 +111,7 @@ export const overlay = new p5((p) => {
 
     p.logUnit = function(data) {
       if (data.db == discourses.db){
-      discourses.addUnit(data.c, data.p, data.t, data.u,data.r,data.d)
+      discourses.addUnit(data.c, data.p, data.t, data.u,data.r,data.d,data.db)
       discourses.vis()
       }
     }

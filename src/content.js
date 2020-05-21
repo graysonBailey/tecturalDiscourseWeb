@@ -13,7 +13,7 @@ export let discourses = [];
 
 
 export class discourseUnit {
-  constructor(p5, c, p, t, u, r, d) {
+  constructor(p5, c, p, t, u, r, d,db) {
     this.p5 = p5
     this.c = c
     this.p = p
@@ -28,6 +28,7 @@ export class discourseUnit {
     this.isHighlighted = false
     this.relatesTo = r
     this.d = d
+    this.db = db
     }
 
   checkType() {
@@ -148,9 +149,19 @@ export class discourseUnit {
 
   }
 
-  isInsideScreen() {
-    return this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
+  isInside() {
+    let insideScreen = this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
+    let insideSet
+    let fKey = String(document.getElementById("filterKey").textContent)
+    if(String(this.db) == fKey){
+      insideSet = true
+    } else {
+      insideSet = false
+    }
+    return insideScreen && insideSet
   }
+
+
 
   isOfConcern() {
     let concern = this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
@@ -162,20 +173,38 @@ export class discourseUnit {
 }
 
 export class discourseSet {
-  constructor(p5, name) {
+  constructor(p5) {
     this.p5 = p5
     this.set = []
     this.pendingRelation = []
-    this.db = name
-  }
-
-  name(str) {
-    this.db = str
+    this.nameSpaces = []
   }
 
 
-  addUnit(c, p, t, u, r,d) {
-    this.set.push(new discourseUnit(this.p5, c, p, t, u, r,d))
+  addUnit(c, p, t, u, r,d,db) {
+    this.set.push(new discourseUnit(this.p5, c, p, t, u, r,d,db))
+    this.checkNameSpaces(db)
+
+  }
+
+  checkNameSpaces(db){
+    if(this.nameSpaces.length > 0){
+      let cCount = 0;
+      for(let each in this.nameSpaces){
+        if(this.nameSpaces[each] == db){
+          cCount++
+          break
+        }
+      }
+      if(cCount == 0){
+        this.nameSpaces.push(db)
+      }
+    } else {
+      this.nameSpaces.push(db)
+    }
+
+    console.log(this.nameSpaces)
+
   }
 
   groupRelations() {
@@ -201,7 +230,7 @@ export class discourseSet {
 
   vis() {
     this.groupRelations()
-    let insiders = this.set.filter(item => item.isInsideScreen())
+    let insiders = this.set.filter(item => item.isInside())
     for (let each in insiders) {
       insiders[each].display()
     }
@@ -221,8 +250,7 @@ export class discourseSet {
           this.pendingRelation[0].relatesTo.push(theConcerned[each].u)
           let data = {
             u: this.pendingRelation[0].u,
-            r: theConcerned[each].u,
-            db: discourses.db
+            r: theConcerned[each].u
           }
           socket.emit('relation', data)
         }
@@ -236,11 +264,12 @@ export class discourseSet {
   }
 }
 
-export async function getBase(url, name) {
+export async function getBase(url) {
   try {
     const response = await fetch(url)
     const body = await response.json()
-    loadDiscourseUnitsToArray(body, name)
+    loadDiscourseUnitsToArray(body)
+    console.log(body)
     discourses.vis()
   } catch (error) {
     console.log(error)
@@ -249,10 +278,10 @@ export async function getBase(url, name) {
 
 }
 
-function loadDiscourseUnitsToArray(units, name) {
-  discourses = new discourseSet(content, name)
+function loadDiscourseUnitsToArray(units) {
+  discourses = new discourseSet(content)
   for (let each in units) {
     let unit = units[each]
-    discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r,unit.d)
+    discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r,unit.d,unit.db)
   }
 }

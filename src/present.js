@@ -10,28 +10,24 @@ import {
 export class discursiveOverlay {
   constructor(p5) {
     this.p5 = p5
-    this.currentDiscourse
+    this.filterKey = "don't"
   }
 
   giveChoices() {
-    if (document.getElementById('archChoice') == null) {
-      let architecturalButton = this.p5.createButton('(database)_the_architectural.db').class('spatialChoice').id('archChoice')
-      let anarchicButton = this.p5.createButton('(database)_the_anarchic.db').class('spatialChoice').id('anarchChoice')
-      let discursiveButton = this.p5.createButton('(database)_the_discursive.db').class('spatialChoice').id('discursiveChoice')
-      let verbundenButton = this.p5.createButton('(intertwine)_verbunden.dbs').class('spatialChoice').id('verbundChoice')
-
-
-      architecturalButton.position(210, 160)
-      anarchicButton.position(210, 180)
-      discursiveButton.position(210, 200)
-      verbundenButton.position(210, 220)
-
-      architecturalButton.mousePressed(this.loadArchitectural)
-      anarchicButton.mousePressed(this.loadAnarchic)
-      verbundenButton.mousePressed(this.loadVerbunden)
-      discursiveButton.mousePressed(this.loaddiscursive)
-    }
+      for(let each in discourses.nameSpaces){
+        let text = discourses.nameSpaces[each]
+         let tempBut = this.p5.createButton(text).class('spatialChoice').id(each).value(each)
+         console.log("buttoned" + text)
+         tempBut.position(210,160+(each*20))
+         tempBut.mousePressed(() => {
+           document.getElementById("filterKey").textContent = discourses.nameSpaces[tempBut.value()]
+           tempBut.remove()
+           discourses.vis();
+           return
+         })
+      }
   }
+
 
   loadArchitectural() {
     getBase('/architectural', "arch").then(body => console.log(body))
