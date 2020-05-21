@@ -14,71 +14,67 @@ export class discursiveOverlay {
   }
 
   giveChoices() {
+
+    let newBut = this.p5.createButton('_new discourse space').class('spatialChoice').id('newDSpace')
+    newBut.position(210,140)
+
+
+
       for(let each in discourses.nameSpaces){
         let text = discourses.nameSpaces[each]
          let tempBut = this.p5.createButton(text).class('spatialChoice').id(each).value(each)
-         console.log("buttoned" + text)
          tempBut.position(210,160+(each*20))
          tempBut.mousePressed(() => {
            document.getElementById("filterKey").textContent = discourses.nameSpaces[tempBut.value()]
-           tempBut.remove()
+           while(document.getElementsByClassName("spatialChoice")[0] != null){
+             document.getElementsByClassName("spatialChoice")[0].remove()
+           }
+           newBut.remove()
            discourses.vis();
-           return
+           document.getElementById('discourseLoad').classList.add('away')
+           document.getElementById('switchLoad').classList.remove('away')
+           document.getElementById('rp-b').classList.remove('away')
+           document.getElementById('gp-b').classList.remove('away')
+           overlay.clear()
+
          })
       }
-  }
+      newBut.mousePressed(() => {
+        let newDisc = this.p5.createInput()
+
+        newDisc.position(210,140)
+        while(document.getElementsByClassName("spatialChoice")[0] != null){
+          document.getElementsByClassName("spatialChoice")[0].remove()
+        }
+        let nDBut = this.p5.createButton('submit').class("spatialChoice")
+        nDBut.position(400,140)
+
+        nDBut.mousePressed(() => {
+
+          let text = newDisc.value()
+          let check = 0
+          for(let each in discourses.nameSpaces){
+            if(discourses.nameSpaces[each] == text){
+              check++
+            }
+
+          }
+          if(check == 0){
+            document.getElementById("filterKey").textContent = text
+            newDisc.remove()
+            nDBut.remove()
+            discourses.vis();
+            document.getElementById('discourseLoad').classList.add('away')
+            document.getElementById('switchLoad').classList.remove('away')
+            document.getElementById('rp-b').classList.remove('away')
+            document.getElementById('gp-b').classList.remove('away')
+            overlay.clear()
+          }else{
+            this.text("already in use // provide a new input",210,125)
+          }
+        })
 
 
-  loadArchitectural() {
-    getBase('/architectural', "arch").then(body => console.log(body))
-    document.getElementById('rp-b').classList.remove('away')
-    document.getElementById('gp-b').classList.remove('away')
-    document.getElementById('archChoice').remove()
-    document.getElementById('anarchChoice').remove()
-    document.getElementById('verbundChoice').remove()
-    document.getElementById('discursiveChoice').remove()
-    document.getElementById('discourseLoad').classList.add('away')
-    document.getElementById('switchLoad').classList.remove('away')
-    console.log(discourses.db)
-    overlay.clear()
-  }
-
-  loadAnarchic() {
-    getBase('/anarchic', "an").then(body => console.log(body))
-    document.getElementById('rp-b').classList.remove('away')
-    document.getElementById('gp-b').classList.remove('away')
-    document.getElementById('archChoice').remove()
-    document.getElementById('anarchChoice').remove()
-    document.getElementById('verbundChoice').remove()
-    document.getElementById('discursiveChoice').remove()
-    document.getElementById('discourseLoad').classList.add('away')
-    document.getElementById('switchLoad').classList.remove('away')
-    overlay.clear()
-  }
-
-  loadVerbunden() {
-    getBase('/verbunden', "ver").then(body => console.log(body))
-    document.getElementById('rp-b').classList.remove('away')
-    document.getElementById('gp-b').classList.remove('away')
-    document.getElementById('archChoice').remove()
-    document.getElementById('anarchChoice').remove()
-    document.getElementById('verbundChoice').remove()
-    document.getElementById('discursiveChoice').remove()
-    document.getElementById('discourseLoad').classList.add('away')
-    document.getElementById('switchLoad').classList.remove('away')
-    overlay.clear()
-  }
-
-  loaddiscursive() {
-    getBase('/discursive', "med").then(body => console.log(body))
-    document.getElementById('rp-b').classList.remove('away')
-    document.getElementById('gp-b').classList.remove('away')
-    document.getElementById('archChoice').remove()
-    document.getElementById('anarchChoice').remove()
-    document.getElementById('verbundChoice').remove()
-    document.getElementById('discursiveChoice').remove()
-    document.getElementById('discourseLoad').classList.add('away')
-    document.getElementById('switchLoad').classList.remove('away')
-    overlay.clear()
+      })
   }
 }

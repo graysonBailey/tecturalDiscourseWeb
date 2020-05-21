@@ -74,15 +74,18 @@ window.onload = function() {
 
   }
   document.getElementById('switchLoad').onclick = () => {
-    document.getElementById('rp-b').classList.remove('current');
-    document.getElementById('gp-b').classList.remove('current');
-    document.getElementById('gp-b').classList.toggle('away');
-    document.getElementById('rp-b').classList.toggle('away');
+    document.getElementById('rp-b').classList.remove('current')
+    document.getElementById('gp-b').classList.remove('current')
+    document.getElementById('gp-b').classList.toggle('away')
+    document.getElementById('rp-b').classList.toggle('away')
+    document.getElementById('filterKey').textContent = "--"
     content.clear()
     switchModeInstructions(0)
     let presenter = new discursiveOverlay(overlay)
     overlay.clear()
     presenter.giveChoices()
+    position = 0
+    document.getElementById('verPos').innerText = 0
   }
 
 getBase('/entire').then(body => console.log(body))
@@ -160,13 +163,13 @@ export const overlay = new p5((p) => {
           u: discourses.set.length,
           r: [],
           d: [p.year(),p.month(),p.day(),p.hour(),p.minute(),p.second()],
-          db:discourses.db
+          db:document.getElementById('filterKey').textContent
         }
         console.log(tDisc.d)
         temp.remove()
         tempButton.remove()
         escButton.remove()
-        discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u, [],tDisc.d)
+        discourses.addUnit(tDisc.c, tDisc.p, tDisc.t, tDisc.u, [],tDisc.d,tDisc.db)
         socket.emit('unit', tDisc);
         discourses.vis()
       } else {

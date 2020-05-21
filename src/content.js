@@ -13,7 +13,7 @@ export let discourses = [];
 
 
 export class discourseUnit {
-  constructor(p5, c, p, t, u, r, d,db) {
+  constructor(p5, c, p, t, u, r, d, db) {
     this.p5 = p5
     this.c = c
     this.p = p
@@ -29,7 +29,7 @@ export class discourseUnit {
     this.relatesTo = r
     this.d = d
     this.db = db
-    }
+  }
 
   checkType() {
     if (this.c.charAt(0) == 'r' && this.c.charAt(1) == '/') {
@@ -50,7 +50,6 @@ export class discourseUnit {
   }
 
   buildLines() {
-
     let rem = 0;
     let lrem = 0;
     let seg = []
@@ -122,7 +121,7 @@ export class discourseUnit {
     this.p5.fill(255)
     this.p5.text(this.ref, this.p.x, this.p.y + position + this.bound.z, this.wid, 300)
     this.p5.textSize(12)
-    this.p5.text(this.d,this.p.x-5,this.p.y-8+position)
+    this.p5.text(this.d, this.p.x - 5, this.p.y - 8 + position)
   }
 
   displayBound(color, bcolor, size) {
@@ -153,7 +152,7 @@ export class discourseUnit {
     let insideScreen = this.p.x > 0 && this.p.x < this.p5.width && this.p.y + position > -30 && this.p.y + position < this.p5.height
     let insideSet
     let fKey = String(document.getElementById("filterKey").textContent)
-    if(String(this.db) == fKey){
+    if (String(this.db) == fKey || fKey == "0-verbunden") {
       insideSet = true
     } else {
       insideSet = false
@@ -177,31 +176,28 @@ export class discourseSet {
     this.p5 = p5
     this.set = []
     this.pendingRelation = []
-    this.nameSpaces = []
+    this.nameSpaces = ["0-verbunden"]
   }
 
 
-  addUnit(c, p, t, u, r,d,db) {
-    this.set.push(new discourseUnit(this.p5, c, p, t, u, r,d,db))
+  addUnit(c, p, t, u, r, d, db) {
+    this.set.push(new discourseUnit(this.p5, c, p, t, u, r, d, db))
     this.checkNameSpaces(db)
 
   }
 
-  checkNameSpaces(db){
-    if(this.nameSpaces.length > 0){
-      let cCount = 0;
-      for(let each in this.nameSpaces){
-        if(this.nameSpaces[each] == db){
-          cCount++
-          break
-        }
+  checkNameSpaces(db) {
+    let cCount = 0;
+    for (let each in this.nameSpaces) {
+      if (this.nameSpaces[each] == db) {
+        cCount++
+        break
       }
-      if(cCount == 0){
-        this.nameSpaces.push(db)
-      }
-    } else {
+    }
+    if (cCount == 0) {
       this.nameSpaces.push(db)
     }
+    this.nameSpaces.sort()
 
     console.log(this.nameSpaces)
 
@@ -209,20 +205,30 @@ export class discourseSet {
 
   groupRelations() {
     let theRelated = this.set.filter(item => item.relatesTo.length)
-    for (let each in theRelated) {
-      let ties = theRelated[each].relatesTo
-      let connections = this.set.filter(item => {
+
+
+
+
+
+      for (let each in theRelated) {
+        let ties = theRelated[each].relatesTo
+        let connections = this.set.filter(item => {
         return ties.includes(item.u)
-      })
-      for (let those in connections) {
-        this.p5.noFill()
-        this.p5.stroke('#ffA908')
-        if (document.getElementById('rp-b').classList.contains('current')) {
-          this.p5.strokeWeight(3)
-        } else {
-          this.p5.strokeWeight(.8)
+        })
+        for (let those in connections) {
+
+          let fKey = String(document.getElementById("filterKey").textContent)
+          if (connections[those].db == fKey || fKey == "0-verbunden") {
+
+          this.p5.noFill()
+          this.p5.stroke('#ffA908')
+          if (document.getElementById('rp-b').classList.contains('current')) {
+            this.p5.strokeWeight(3)
+          } else {
+            this.p5.strokeWeight(.8)
+          }
+          this.p5.line(theRelated[each].p.x + 200, theRelated[each].centroid.y + position, connections[those].p.x + 200, connections[those].centroid.y + position)
         }
-        this.p5.line(theRelated[each].p.x + 200, theRelated[each].centroid.y + position, connections[those].p.x + 200, connections[those].centroid.y + position)
       }
     }
 
@@ -282,6 +288,6 @@ function loadDiscourseUnitsToArray(units) {
   discourses = new discourseSet(content)
   for (let each in units) {
     let unit = units[each]
-    discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r,unit.d,unit.db)
+    discourses.addUnit(unit.c, unit.p, unit.t, unit.u, unit.r, unit.d, unit.db)
   }
 }
