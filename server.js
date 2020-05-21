@@ -17,8 +17,8 @@ const architectural = new Datastore({
   autoload: true
 });
 
-const medial = new Datastore({
-  filename: 'medial.db',
+const discursive = new Datastore({
+  filename: 'discursive.db',
   autoload: true
 });
 
@@ -51,8 +51,8 @@ app.get('/howdy', (request, response) => {
   ])
 })
 
-app.get('/medial', (request, response) => {
-  architectural.find({}, (err, docs) => {
+app.get('/discursive', (request, response) => {
+  discursive.find({}, (err, docs) => {
     if (err) {
       console.log("error in retrieval find process...")
       response.end();
@@ -114,6 +114,9 @@ function newConnection(socket) {
     } else if (data.db == "an"){
       delete data.db
       anarchic.insert(data);
+    } else if (data.db == "med"){
+      delete data.db
+      discursive.insert(data);
     }
   })
 
@@ -127,6 +130,9 @@ function newConnection(socket) {
     } else if (data.db == "an"){
       delete data.db
       anarchic.update({ u: data.u }, { $push: { r: data.r } }, {}, function (){})
+    }else if (data.db == "med"){
+      delete data.db
+      discursive.update({ u: data.u }, { $push: { r: data.r } }, {}, function (){})
     }
   })
 
