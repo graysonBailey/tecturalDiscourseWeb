@@ -40,6 +40,8 @@ async function postUNIT(url, data) {
 
 
 
+
+
 window.onload = function() {
 
 
@@ -88,7 +90,7 @@ window.onload = function() {
     document.getElementById('verPos').innerText = 0
   }
 
-getBase('/entire').then(body => console.log(body))
+
 
 }
 
@@ -244,3 +246,5 @@ let reposition = function(event){
 $(document).on('keydown', '.geist', function() {
   checkInput()
 })
+
+getBase('/entire').then(body => console.log(body))

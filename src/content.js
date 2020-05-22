@@ -17,6 +17,7 @@ export class discourseUnit {
     this.p5 = p5
     this.c = c
     this.p = p
+    this.rp = p
     this.t = this.checkType()
     this.u = u
     this.bound = this.constructBound()
@@ -70,8 +71,6 @@ export class discourseUnit {
     return seg.length + 2
   }
 
-
-
   constructBound() {
     let lines = this.buildLines()
     let tbound = this.p5.createVector(this.p.x - 5, this.p.y - 5, (lines * 18) + 10)
@@ -82,7 +81,6 @@ export class discourseUnit {
     let color
     let bcolor = this.p5.color(0)
     let d = 0;
-
 
     if (this.t == 0) {
       d = 2
@@ -122,13 +120,15 @@ export class discourseUnit {
     this.p5.text(this.ref, this.p.x, this.p.y + position + this.bound.z, this.wid, 300)
     this.p5.textSize(12)
     this.p5.text(this.d, this.p.x - 5, this.p.y - 8 + position)
+    this.p5.text(this.db, this.p.x + 395 - this.p5.textWidth(this.db), this.p.y - 8 + position)
+
   }
 
   displayBound(color, bcolor, size) {
     this.p5.stroke(color)
     this.p5.fill(bcolor)
     this.p5.strokeWeight(size)
-    this.p5.rect(this.bound.x, this.bound.y + position, this.wid, this.bound.z)
+    this.p5.rect(this.p.x-5, this.p.y-5 + position, this.wid, this.bound.z)
   }
 
   concernedHighlight() {
@@ -145,7 +145,6 @@ export class discourseUnit {
       this.p5.endShape()
     }
     this.isHighlighted = true
-
   }
 
   isInside() {
@@ -159,8 +158,6 @@ export class discourseUnit {
     }
     return insideScreen && insideSet
   }
-
-
 
   isOfConcern() {
     let concern = this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
@@ -184,6 +181,13 @@ export class discourseSet {
     this.set.push(new discourseUnit(this.p5, c, p, t, u, r, d, db))
     this.checkNameSpaces(db)
 
+  }
+
+  resetPlacements() {
+    for (let each in this.set) {
+      this.set[each].p = this.set[each].rp
+
+    }
   }
 
   checkNameSpaces(db) {
@@ -210,15 +214,15 @@ export class discourseSet {
 
 
 
-      for (let each in theRelated) {
-        let ties = theRelated[each].relatesTo
-        let connections = this.set.filter(item => {
+    for (let each in theRelated) {
+      let ties = theRelated[each].relatesTo
+      let connections = this.set.filter(item => {
         return ties.includes(item.u)
-        })
-        for (let those in connections) {
+      })
+      for (let those in connections) {
 
-          let fKey = String(document.getElementById("filterKey").textContent)
-          if (connections[those].db == fKey || fKey == "0-verbunden") {
+        let fKey = String(document.getElementById("filterKey").textContent)
+        if (connections[those].db == fKey || fKey == "0-verbunden") {
 
           this.p5.noFill()
           this.p5.stroke('#ffA908')
@@ -231,12 +235,44 @@ export class discourseSet {
         }
       }
     }
+  }
 
+  checkOverlap() {
+    let insiders = this.set.filter(item => item.isInside())
+    insiders.forEach(e => {
+      insiders.forEach(el => {
+        let distX = e.p.x - el.p.x
+        if (Math.abs(distX) > 400) {
+          distX = 0
+        }
+        let distY = e.p.y - el.p.y
+        if (Math.abs(distY) > e.bound.z) {
+          distY = 0
+        }
+
+        while (Math.abs(distX) > 1 && Math.abs(distX)<450 && Math.abs(distY) > 1&& Math.abs(distY) < e.bound.z+50) {
+          if (Math.abs(distX) < Math.abs(distY)) {
+            let vec = distX / Math.abs(distX)
+            e.p.x += (vec * 5)
+            e.centroid.x+=(vec*5)
+            distX = e.p.x - el.p.x
+          } else {
+            let vec = distY / Math.sign(distY)
+            e.p.y += (vec * 5)
+            e.centroid.y+=(vec*5)
+            distY = e.p.y - el.p.y
+          }
+        }
+
+      })
+    })
+    return insiders
   }
 
   vis() {
-    this.groupRelations()
-    let insiders = this.set.filter(item => item.isInside())
+
+    let insiders = this.checkOverlap()
+      this.groupRelations()
     for (let each in insiders) {
       insiders[each].display()
     }
