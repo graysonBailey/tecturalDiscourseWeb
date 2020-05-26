@@ -355,7 +355,7 @@ border:none;
 }
 
 .about-text {
-  padding-left:10 px;
+  padding-left:10%;
 
   text-overflow: wrap;
   font-size : 18;
