@@ -32,6 +32,10 @@ export class discourseUnit {
     this.db = db
   }
 
+
+
+
+
   checkType() {
     if (this.c.charAt(0) == 'r' && this.c.charAt(1) == '/') {
       return 1
@@ -128,7 +132,7 @@ export class discourseUnit {
     this.p5.stroke(color)
     this.p5.fill(bcolor)
     this.p5.strokeWeight(size)
-    this.p5.rect(this.p.x-5, this.p.y-5 + position, this.wid, this.bound.z)
+    this.p5.rect(this.p.x - 5, this.p.y - 5 + position, this.wid, this.bound.z)
   }
 
   concernedHighlight() {
@@ -164,7 +168,7 @@ export class discourseUnit {
     if (!concern) {
       this.isHighlighted = false
     }
-    return this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z
+    return this.p5.mouseX > this.bound.x && this.p5.mouseY > this.bound.y + position && this.p5.mouseX < this.bound.x + this.wid && this.p5.mouseY < this.bound.y + position + this.bound.z && this.isInside()
   }
 }
 
@@ -183,10 +187,12 @@ export class discourseSet {
 
   }
 
-  resetPlacements() {
+  resetPositions(){
     for (let each in this.set) {
-      this.set[each].p = this.set[each].rp
-
+      this.set[each].p = this.p5.createVector(this.set[each].rp.x,this.set[each].rp.y)
+      this.set[each].bound.x = this.set[each].p.x - 5
+      this.set[each].bound.y = this.set[each].p.y - 5
+      this.set[each].centroid = this.set[each].p5.createVector(this.set[each].p.x + (this.set[each].wid / 2), this.set[each].p.y + (this.set[each].bound.z / 2))
     }
   }
 
@@ -202,9 +208,6 @@ export class discourseSet {
       this.nameSpaces.push(db)
     }
     this.nameSpaces.sort()
-
-    console.log(this.nameSpaces)
-
   }
 
   groupRelations() {
@@ -242,37 +245,34 @@ export class discourseSet {
     insiders.forEach(e => {
       insiders.forEach(el => {
         let distX = e.p.x - el.p.x
-        if (Math.abs(distX) > 400) {
-          distX = 0
-        }
-        let distY = e.p.y - el.p.y
-        if (Math.abs(distY) > e.bound.z) {
-          distY = 0
-        }
 
-        while (Math.abs(distX) > 1 && Math.abs(distX)<450 && Math.abs(distY) > 1&& Math.abs(distY) < e.bound.z+50) {
-          if (Math.abs(distX) < Math.abs(distY)) {
-            let vec = distX / Math.abs(distX)
-            e.p.x += (vec * 5)
-            e.centroid.x+=(vec*5)
-            distX = e.p.x - el.p.x
-          } else {
-            let vec = distY / Math.sign(distY)
-            e.p.y += (vec * 5)
-            e.centroid.y+=(vec*5)
-            distY = e.p.y - el.p.y
+        let distY = e.p.y - el.p.y
+
+
+        if (Math.abs(distX) > 0 && Math.abs(distX) < 425) {
+          if (Math.abs(distY) > 0 && Math.abs(distY) < e.bound.z+25) {
+            if (Math.abs(distX) < Math.abs(distY) && e.p.x >400) {
+              let vec = Math.sign(distX)*(100)
+              e.p.x += vec
+              e.bound.x += vec
+              e.centroid.x += vec
+            } else {
+              let vec = Math.sign(distY)*(100)
+              e.p.y += vec
+              e.bound.y += vec
+              e.centroid.y += vec
+            }
           }
         }
-
       })
     })
     return insiders
   }
 
   vis() {
-
+    //let insiders = this.set.filter(item => item.isInside())
     let insiders = this.checkOverlap()
-      this.groupRelations()
+    this.groupRelations()
     for (let each in insiders) {
       insiders[each].display()
     }
@@ -283,8 +283,6 @@ export class discourseSet {
     let theConcerned = this.set.filter(item => item.isOfConcern())
     for (let each in theConcerned) {
       theConcerned[each].concernedHighlight()
-
-
       if (!this.pendingRelation.length) {
         this.pendingRelation.push(theConcerned[each])
       } else {
@@ -296,12 +294,9 @@ export class discourseSet {
           }
           socket.emit('relation', data)
         }
-        console.log(this.pendingRelation[0].relatesTo)
         this.vis()
         this.pendingRelation = []
-
       }
-
     }
   }
 }
@@ -311,7 +306,7 @@ export async function getBase(url) {
     const response = await fetch(url)
     const body = await response.json()
     loadDiscourseUnitsToArray(body)
-    console.log(body)
+  //  console.log(body)
     discourses.vis()
   } catch (error) {
     console.log(error)

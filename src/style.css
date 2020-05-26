@@ -206,9 +206,9 @@ user-select: none;
 }
 
 .overlay-close-button {
-  position: fixed;
-  right: 38%;
-  top: 8px;
+  position: absolute;
+  left: 20px;
+  top: 20px;
   font-family: "OCRA", sans-serif;
   font-size: 16pt;
   border:none;
@@ -218,7 +218,9 @@ user-select: none;
 }
 
 .overlay-close-button:hover {
+
   color: black;
+
 }
 
 
