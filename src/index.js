@@ -19,7 +19,7 @@ import switchModeInstructions from './modeSwitch.js'
 const path = require('path');
 //export const socket = io();
 
-export const socket = io('tecturaldiscourse-base.eba-mxiurpsc.us-east-1.elasticbeanstalk.com')
+export const socket = io('http://tecturaldiscourseweb.eba-yxhsmtkb.eu-central-1.elasticbeanstalk.com')
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
 export let mode = 0
 export let position = 0;
