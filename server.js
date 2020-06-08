@@ -8,7 +8,7 @@ app.use(express.static('dist'));
 app.use(express.json({
   limit: '1mb'
 }));
-var server = app.listen(3000, '0.0.0.0');
+var server = app.listen(8081, '0.0.0.0');
 var io = socket(server);
 console.log("My socket server is running");
 

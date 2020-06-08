@@ -17,7 +17,9 @@ import {
 } from './content.js';
 import switchModeInstructions from './modeSwitch.js'
 const path = require('path');
-export const socket = io();
+//export const socket = io();
+
+export const socket = io('tecturaldiscourse-base.eba-mxiurpsc.us-east-1.elasticbeanstalk.com')
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
 export let mode = 0
 export let position = 0;
@@ -150,18 +152,17 @@ export const overlay = new p5((p) => {
   }
 
   p.newDrawing = function(data) {
-    p.noStroke();
-    p.fill(255, 0, 100);
-    p.fill(230, 47, 240);
-    p.text(data.talk, data.x, data.y);
+    p.noFill();
+    p.stroke(255, 0, 100);
+    //p.fill(230, 47, 240);
+    p.line(data.x-3,data.y-3,data.x+3,data.y+3)
+    p.line(data.x-3,data.y+3,data.x+3,data.y-3)
   }
 
   p.mouseDragged = function() {
-    var tex = "loser";
     var data = {
       x: p.mouseX,
-      y: p.mouseY,
-      talk: tex
+      y: p.mouseY
     }
     socket.emit('mouse', data);
     p.noStroke();

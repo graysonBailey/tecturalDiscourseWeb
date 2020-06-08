@@ -225,7 +225,7 @@ export class discourseSet {
       for (let those in connections) {
 
         let fKey = String(document.getElementById("filterKey").textContent)
-        if (connections[those].db == fKey || fKey == "0-verbunden") {
+        if ((connections[those].db == fKey && theRelated[each].db == fKey) || fKey == "0-verbunden") {
 
           this.p5.noFill()
           this.p5.stroke('#ffA908')
@@ -251,7 +251,7 @@ export class discourseSet {
 
         if (Math.abs(distX) > 0 && Math.abs(distX) < 425) {
           if (Math.abs(distY) > 0 && Math.abs(distY) < e.bound.z+25) {
-            if (Math.abs(distX) < Math.abs(distY) && e.p.x >400) {
+            if (Math.abs(distX) > Math.abs(distY) && e.p.x >400) {
               let vec = Math.sign(distX)*(100)
               e.p.x += vec
               e.bound.x += vec
