@@ -21,20 +21,20 @@ const path = require('path');
 
 export const socket = io('http://tecturaldiscourseweb.eba-yxhsmtkb.eu-central-1.elasticbeanstalk.com')
 // Mode 0 is starting, Mode 1 is geistplane action, Mode 2 is relations
-export let mode = 0
+//export let mode = 0
 export let position = 0;
 let vertSpeed = 30;
 
-async function postUNIT(url, data) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  return response.json()
-}
+// async function postUNIT(url, data) {
+//   const response = await fetch(url, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(data)
+//   })
+//   return response.json()
+// }
 
 
 
@@ -53,7 +53,6 @@ window.onload = function() {
   document.getElementById('about-this-website').onclick = () => {
     document.getElementById('about-window-overlay').classList.remove('disabled');
     console.log("pressed it")
-    mode = 0
   }
 
   document.getElementById('about-window-overlay-close').onclick = () => {
